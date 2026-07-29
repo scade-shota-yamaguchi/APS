@@ -5,6 +5,10 @@
   (ログインページ右上に表示されます)
 
   更新履歴:
+  - v1.3.0 2026.07.29 規約・ポリシー管理を追加
+      アドミンに文書管理ページ(プライバシーポリシー/利用規約/特商法表記の
+      編集・公開/下書き・プレビュー・新規追加)。フッターと入会同意文のリンクに
+      即時反映。初期文面のひな形を同梱(【要記入】箇所あり)
   - v1.2.1 2026.07.29 パスワード表示切替(目のアイコン)を追加
   - v1.2.0 2026.07.29 PWA対応+レスポンシブ総合調整
       manifest/Service Worker/アイコン追加(オフライン起動・ホーム画面追加)、
@@ -558,6 +562,12 @@ a:hover{text-decoration:underline}
   .pub-header{padding-top:env(safe-area-inset-top)}
   .ver-badge{top:calc(14px + env(safe-area-inset-top))}
 }
+/* 規約・ポリシー文書 */
+.legal-modal-box{max-width:760px;max-height:86vh;overflow:auto}
+.legal-body{font-size:13.5px;line-height:2.0;color:#333}
+.legal-body .doc-h{font-weight:700;color:var(--ink);margin:18px 0 4px;padding-left:10px;border-left:3px solid var(--blue)}
+.legal-body p{margin:0 0 10px}
+.legal-updated{font-size:11.5px;color:var(--faint);margin-top:16px;text-align:right}
 /* インストールボタン(対応ブラウザでのみ表示) */
 .install-box{display:none;margin-top:28px;border:1px dashed var(--line);padding:16px 18px;text-align:center}
 .install-box.show{display:block}
@@ -662,7 +672,7 @@ a:hover{text-decoration:underline}
     </div></div>
     <div class="consent-line">
       <input type="checkbox" id="agreeTos">
-      <label for="agreeTos" style="cursor:pointer"><a href="javascript:void(0)">利用規約</a>および<a href="javascript:void(0)">プライバシーポリシー</a>(受験時の顔記録・操作ログの取得を含む)に同意します。</label>
+      <label for="agreeTos" style="cursor:pointer"><a href="javascript:void(0)" onclick="openLegalDoc('terms')">利用規約</a>および<a href="javascript:void(0)" onclick="openLegalDoc('privacy')">プライバシーポリシー</a>(受験時の顔記録・操作ログの取得を含む)に同意します。</label>
     </div>
     <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="doRegister()">登録して決済に進む</button></div>
     <div class="form-links"><a href="javascript:void(0)" onclick="showAuth('login')">ログイン画面へ戻る</a></div>
@@ -696,9 +706,9 @@ a:hover{text-decoration:underline}
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="fl">
-        <a href="javascript:void(0)">利用規約</a>
-        <a href="javascript:void(0)">プライバシーポリシー</a>
-        <a href="javascript:void(0)">特定商取引法に基づく表記</a>
+        <a href="javascript:void(0)" onclick="openLegalDoc('terms')">利用規約</a>
+        <a href="javascript:void(0)" onclick="openLegalDoc('privacy')">プライバシーポリシー</a>
+        <a href="javascript:void(0)" onclick="openLegalDoc('tokushoho')">特定商取引法に基づく表記</a>
         <a href="javascript:void(0)">お問い合わせ</a>
       </div>
       <div>© S-CADE. Inc. — ATHLETIC PERFORMANCE SCIENTIST</div>
@@ -773,8 +783,9 @@ a:hover{text-decoration:underline}
     <footer class="site-footer">
       <div class="footer-inner">
         <div class="fl">
-          <a href="javascript:void(0)">利用規約</a>
-          <a href="javascript:void(0)">プライバシーポリシー</a>
+          <a href="javascript:void(0)" onclick="openLegalDoc('terms')">利用規約</a>
+          <a href="javascript:void(0)" onclick="openLegalDoc('privacy')">プライバシーポリシー</a>
+          <a href="javascript:void(0)" onclick="openLegalDoc('tokushoho')">特定商取引法に基づく表記</a>
           <a href="javascript:void(0)">お問い合わせ</a>
         </div>
         <div>© S-CADE. Inc.</div>
@@ -784,6 +795,15 @@ a:hover{text-decoration:underline}
 </div>
 
 <!-- 退会モーダル -->
+
+<!-- 規約・ポリシー表示モーダル(公開・会員共通) -->
+<div class="modal-bg" id="legalModal">
+  <div class="modal legal-modal-box">
+    <h3 id="legalTitle" style="margin-bottom:14px"></h3>
+    <div class="legal-body" id="legalBody"></div>
+    <div class="acts"><button class="btn btn-line btn-md" onclick="closeLegalDoc()">閉じる</button></div>
+  </div>
+</div>
 
 <!-- ============ 管理画面(アドミン) ============ -->
 <div class="side-overlay" id="admSideOverlay" onclick="admToggleSide(false)"></div>
@@ -813,6 +833,7 @@ a:hover{text-decoration:underline}
       <button class="snav" data-view="sales" onclick="admGo('sales')">決済・売上</button>
       <button class="snav" data-view="analytics" onclick="admGo('analytics')">アクセス解析</button>
       <button class="snav" data-view="notices" onclick="admGo('notices')">お知らせ管理</button>
+      <button class="snav" data-view="legal" onclick="admGo('legal')">規約・ポリシー</button>
     </div>
     <div class="side-user">
       <div class="nm" id="admUserName">管理者</div>
@@ -839,6 +860,7 @@ a:hover{text-decoration:underline}
       <div id="view-adm-sales" class="hide"></div>
       <div id="view-adm-analytics" class="hide"></div>
       <div id="view-adm-notices" class="hide"></div>
+      <div id="view-adm-legal" class="hide"></div>
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
@@ -885,7 +907,7 @@ a:hover{text-decoration:underline}
 </div>
 <script>
 /* ==== バージョン(更新時はここを書き換える) ==== */
-const APP_VERSION="v1.2.1";
+const APP_VERSION="v1.3.0";
 const APP_UPDATED="2026.07.29";
 
 /* ==========================================================
@@ -2480,6 +2502,105 @@ function renderSeminars(){
   </div>`;
 }
 
+/* ==========================================================
+   規約・ポリシー文書(アドミンで編集/ユーザー側で表示)
+   localStorage保存のため管理画面の編集がそのまま反映される。実装時はDB+APIへ。
+   ========================================================== */
+const SITE_DOCS_DEFAULT=[
+  { id:"terms", title:"利用規約", status:"公開", updated:"2026.07.29", body:
+`■ 第1条(適用)
+本規約は、株式会社S-CADE.(以下「当社」)が提供する測定ライセンス(APS)eラーニングサービス(以下「本サービス」)の利用条件を定めるものです。
+■ 第2条(会員登録)
+本サービスの利用を希望する方は、本規約に同意のうえ、当社所定の方法で会員登録を行うものとします。登録情報に虚偽があった場合、当社は利用をお断りすることがあります。
+■ 第3条(受講料等)
+受講料・受験料は申込時に表示する金額とし、お支払い後の返金は原則行いません。詳細は「特定商取引法に基づく表記」をご確認ください。
+■ 第4条(禁止事項)
+次の行為を禁止します。(1) アカウントの共有・譲渡 (2) 動画・教材の録画、複製、再配布 (3) 認定試験における不正行為(替え玉受験、資料参照、第三者の関与等) (4) 本サービスの運営を妨げる行為
+■ 第5条(認定試験・資格)
+認定試験では本人確認および不正防止のため、カメラによる顔画像の記録と操作ログの取得を行います。不正が確認された場合、当社は合否の無効化および資格の取消しを行うことができます。
+■ 第6条(知的財産権)
+本サービスで提供する動画・教材・試験問題等の著作権は、当社または正当な権利者に帰属します。
+■ 第7条(サービスの変更・停止)
+当社は、メンテナンス等のため、事前の通知のうえ本サービスの全部または一部を変更・停止することがあります。
+■ 第8条(免責)
+当社は、本サービスの利用により受講者に生じた損害について、当社に故意または重過失がある場合を除き、責任を負いません。
+■ 第9条(規約の変更)
+当社は必要に応じて本規約を変更することができます。変更後の規約は本サービス上に掲示した時点から効力を生じます。
+■ 第10条(準拠法・管轄)
+本規約は日本法に準拠し、本サービスに関する紛争は当社本店所在地を管轄する裁判所を第一審の専属的合意管轄裁判所とします。` },
+  { id:"privacy", title:"プライバシーポリシー", status:"公開", updated:"2026.07.29", body:
+`■ 1. 事業者情報
+株式会社S-CADE.(以下「当社」)は、個人情報の保護に関する法律を遵守し、以下の方針に基づき個人情報を取り扱います。
+■ 2. 取得する情報
+(1) 氏名・フリガナ・所属・メールアドレス等の登録情報 (2) 受講履歴・視聴状況・試験結果等の利用情報 (3) 認定試験時の顔画像(スナップショット)および操作ログ (4) 決済に関する情報(カード情報は決済代行事業者が管理し、当社は保持しません)
+■ 3. 利用目的
+(1) 本サービスの提供・本人確認 (2) 認定試験の不正防止・資格の管理 (3) お問い合わせ対応・重要なお知らせの送付 (4) サービスの改善・統計分析(個人を識別できない形式に加工します)
+■ 4. 顔画像・操作ログの取り扱い
+認定試験時に取得する顔画像および操作ログは、不正防止・合否判定の確認のためにのみ利用し、所定の保存期間経過後に削除します。保存期間は【保存期間を記入】とします。
+■ 5. 第三者提供
+法令に基づく場合を除き、本人の同意なく個人情報を第三者に提供しません。決済処理・動画配信等の業務委託先には、必要な範囲でのみ取り扱いを委託します。
+■ 6. 安全管理措置
+当社は、個人情報への不正アクセス、漏えい、滅失等を防止するため、通信の暗号化、アクセス制御等の適切な安全管理措置を講じます。
+■ 7. 開示・訂正・削除の請求
+本人からの保有個人データの開示・訂正・利用停止・削除のご請求には、本人確認のうえ、法令に従い速やかに対応します。窓口:【問い合わせ先メールアドレスを記入】
+■ 8. 改定
+本ポリシーの内容は、法令の改正やサービス内容の変更に応じて改定することがあります。重要な変更は本サービス上でお知らせします。` },
+  { id:"tokushoho", title:"特定商取引法に基づく表記", status:"公開", updated:"2026.07.29", body:
+`■ 販売事業者
+株式会社S-CADE.
+■ 運営責任者
+【代表者名を記入】
+■ 所在地
+【本店所在地を記入】
+■ お問い合わせ
+【メールアドレスを記入】(お問い合わせはメールにてお願いいたします)
+■ 販売価格
+各講座・受験の申込ページに税込価格を表示します。(例:C級 受講+受験セット 49,800円/受講のみ 35,000円/受験のみ 20,000円)
+■ 販売価格以外の必要料金
+インターネット接続にかかる通信料等はお客様のご負担となります。
+■ お支払い方法
+クレジットカード決済(Stripe)
+■ 支払時期
+お申し込み時にお支払いが確定します。
+■ 役務の提供時期
+決済完了後、ただちに受講を開始いただけます。
+■ 返品・キャンセル
+デジタルコンテンツの性質上、決済完了後の返金・キャンセルは原則お受けできません。ただし、当社の責によりサービスが提供できない場合はこの限りではありません。
+■ 動作環境
+最新のGoogle Chrome / Safari / Microsoft Edge を推奨します。認定試験の受験にはカメラ付き端末が必要です。` },
+];
+const SiteDocs={
+  KEY:"aps_site_docs_v1",
+  load(){
+    let saved=null;
+    try{ saved=JSON.parse(localStorage.getItem(this.KEY)); }catch(e){}
+    if(!saved) return SITE_DOCS_DEFAULT.map(d=>({...d}));
+    const map=new Map(saved.map(d=>[d.id,d]));
+    const merged=SITE_DOCS_DEFAULT.map(d=>map.get(d.id)||{...d});
+    saved.forEach(d=>{ if(!SITE_DOCS_DEFAULT.some(x=>x.id===d.id)) merged.push(d); });
+    return merged;
+  },
+  save(docs){ try{ localStorage.setItem(this.KEY, JSON.stringify(docs)); }catch(e){} },
+};
+let siteDocs=SiteDocs.load();
+
+function legalBodyHtml(body){
+  return String(body).split(/\n/).map(line=>{
+    const t=line.trim();
+    if(!t) return "";
+    if(t.startsWith("■")) return `<p class="doc-h">${esc(t.replace(/^■\s*/,""))}</p>`;
+    return `<p>${esc(t)}</p>`;
+  }).join("");
+}
+function openLegalDoc(id){
+  const d=siteDocs.find(x=>x.id===id);
+  if(!d || d.status!=="公開"){ toast("この文書は現在準備中です"); return; }
+  $("legalTitle").textContent=d.title;
+  $("legalBody").innerHTML=legalBodyHtml(d.body)+`<div class="legal-updated">最終更新日:${esc(d.updated)}</div>`;
+  $("legalModal").classList.add("show");
+}
+function closeLegalDoc(){ $("legalModal").classList.remove("show"); }
+
 /* ---------- パスワード表示切替(目のアイコン) ---------- */
 const EYE_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg>';
 const EYE_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 5 12 5c2 0 3.8.7 5.3 1.6M22.5 12s-4 7-10.5 7c-2 0-3.8-.7-5.3-1.6"/><path d="M9.9 9.9a3.2 3.2 0 0 0 4.2 4.2"/><line x1="3" y1="3" x2="21" y2="21"/></svg>';
@@ -2656,12 +2777,12 @@ function admToggleSide(open){ $("admSideMenu").classList.toggle("open",open); $(
 function admPbar(pct,opts={}){ return `<div class="admPbar"><div class="admPbar-fill ${opts.cls||""}" style="width:${pct}%"></div></div>`; }
 function studentOf(id){ return STUDENTS.find(s=>s.id===id); }
 function admOpenModal(html){ $("admModalBox").innerHTML=html; $("admModalBg").classList.add("show"); }
-function admCloseModal(){ $("admModalBg").classList.remove("show"); }
+function admCloseModal(){ $("admModalBg").classList.remove("show"); $("admModalBox").classList.remove("wide"); }
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") admCloseModal(); });
 
 /* ---------- ルーティング ---------- */
-const ADM_VIEWS=["dash","content","students","studentDetail","exam","proctor","proctorDetail","certs","sales","analytics","notices"];
-const ADM_VIEW_LABEL={dash:"ダッシュボード",content:"コンテンツ管理",students:"受講者管理",studentDetail:"受講者詳細",exam:"試験管理",proctor:"不正監視",proctorDetail:"監視レビュー",certs:"資格発行管理",sales:"決済・売上",analytics:"アクセス解析",notices:"お知らせ管理"};
+const ADM_VIEWS=["dash","content","students","studentDetail","exam","proctor","proctorDetail","certs","sales","analytics","notices","legal"];
+const ADM_VIEW_LABEL={dash:"ダッシュボード",content:"コンテンツ管理",students:"受講者管理",studentDetail:"受講者詳細",exam:"試験管理",proctor:"不正監視",proctorDetail:"監視レビュー",certs:"資格発行管理",sales:"決済・売上",analytics:"アクセス解析",notices:"お知らせ管理",legal:"規約・ポリシー"};
 function admGo(view,opt){
   admState.view=view;
   admToggleSide(false);
@@ -2673,7 +2794,7 @@ function admGo(view,opt){
   $("admTopLoc").textContent=ADM_VIEW_LABEL[view]||"";
   const r={dash:renderDash,content:renderContent,students:renderStudents,studentDetail:()=>renderStudentDetail(opt),
            exam:renderExamAdmin,proctor:renderProctor,proctorDetail:()=>renderProctorDetail(opt),
-           certs:renderCertsAdmin,sales:renderSales,analytics:renderAnalytics,notices:renderNoticesAdmin};
+           certs:renderCertsAdmin,sales:renderSales,analytics:renderAnalytics,notices:renderNoticesAdmin,legal:renderLegalAdmin};
   r[view]();
   window.scrollTo({top:0});
 }
@@ -3393,6 +3514,94 @@ function renderNoticesAdmin(){
     </tbody>
   </table></div>`;
 }
+/* ---------- 規約・ポリシー管理 ---------- */
+function renderLegalAdmin(){
+  $("view-adm-legal").innerHTML = `
+  ${admCrumb(["規約・ポリシー"])}
+  <h1 class="page-title">規約・ポリシー管理</h1>
+  <p class="page-lead">プライバシーポリシー・利用規約などの文書を編集し、サイトに公開します。編集内容はフッターのリンクと入会申し込みの同意文に即時反映されます。</p>
+
+  <div class="table-tools mt-m">
+    <span class="spacer"></span>
+    <button class="btn btn-blue btn-sm" onclick="editLegalDoc(null)">+ 文書を追加</button>
+  </div>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th>文書名</th><th style="width:110px" class="c">状態</th><th style="width:120px" class="c">最終更新日</th><th style="width:230px" class="c"></th></tr></thead>
+    <tbody>
+    ${siteDocs.map(d=>`
+      <tr>
+        <td><b>${esc(d.title)}</b><br><span style="font-size:11px;color:var(--muted)">${d.id}${d.body.includes("【")?' ／ <span style="color:var(--warn)">【要記入】の箇所があります</span>':""}</span></td>
+        <td class="c">${d.status==="公開"?'<span class="tag tag-ok">公開</span>':'<span class="tag tag-gray">下書き</span>'}</td>
+        <td class="c">${esc(d.updated)}</td>
+        <td class="c">
+          <button class="btn btn-line btn-xs" onclick="editLegalDoc('${d.id}')">編集</button>
+          <button class="btn btn-line btn-xs" onclick="previewLegalDoc('${d.id}')">プレビュー</button>
+          ${d.status==="公開"
+            ?`<button class="btn btn-line btn-xs" onclick="toggleLegalStatus('${d.id}')">下書きに戻す</button>`
+            :`<button class="btn btn-blue btn-xs" onclick="toggleLegalStatus('${d.id}')">公開する</button>`}
+        </td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>
+
+  <h2 class="h-bar">掲載場所</h2>
+  <table class="dl-table">
+    <tr><th>フッター</th><td>ログイン前・会員エリア共通のフッターに「利用規約/プライバシーポリシー/特定商取引法に基づく表記」としてリンク表示されます。</td></tr>
+    <tr><th>入会申し込み</th><td>同意チェックの「利用規約」「プライバシーポリシー」リンクから本文が開きます。</td></tr>
+    <tr><th>書式</th><td>行頭に「■ 」を付けると見出し(青バー付き)になります。空行で段落を区切ります。</td></tr>
+    <tr><th>注意</th><td>「下書き」にするとユーザー側では「準備中です」と表示されます。<b>【 】の箇所(住所・責任者名など)は公開前に必ず実情報へ書き換えてください。</b></td></tr>
+  </table>`;
+}
+function editLegalDoc(id){
+  const d=id?siteDocs.find(x=>x.id===id):{title:"",body:"",status:"下書き"};
+  admOpenModal(`
+    <h3>${id?"文書の編集":"文書の新規追加"}</h3>
+    <p class="sub">行頭「■ 」で見出しになります。保存すると即時反映されます。</p>
+    <div class="grid2">
+      <div class="m-field"><label>文書名</label><input id="lgT" value="${esc(d.title)}"></div>
+      <div class="m-field"><label>状態</label>
+        <select id="lgS"><option ${d.status==="公開"?"selected":""}>公開</option><option ${d.status!=="公開"?"selected":""}>下書き</option></select>
+      </div>
+    </div>
+    <div class="m-field"><label>本文</label><textarea id="lgB" style="min-height:340px;font-size:13px;line-height:1.9">${esc(d.body)}</textarea></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="saveLegalDoc('${id||""}')">保存する</button>
+    </div>`);
+  $("admModalBox").classList.add("wide");
+}
+function saveLegalDoc(id){
+  const title=$("lgT").value.trim(), body=$("lgB").value, status=$("lgS").value;
+  if(!title){ toast("文書名を入力してください"); return; }
+  const now=new Date().toISOString().slice(0,10).replace(/-/g,".");
+  if(id){
+    const d=siteDocs.find(x=>x.id===id);
+    d.title=title; d.body=body; d.status=status; d.updated=now;
+  }else{
+    siteDocs.push({ id:"doc"+Date.now().toString(36), title, body, status, updated:now });
+  }
+  SiteDocs.save(siteDocs);
+  admCloseModal(); $("admModalBox").classList.remove("wide");
+  renderLegalAdmin();
+  toast("文書を保存しました(サイトに反映済み)");
+}
+function toggleLegalStatus(id){
+  const d=siteDocs.find(x=>x.id===id);
+  d.status = d.status==="公開" ? "下書き" : "公開";
+  d.updated=new Date().toISOString().slice(0,10).replace(/-/g,".");
+  SiteDocs.save(siteDocs);
+  renderLegalAdmin();
+  toast(d.status==="公開"?`「${d.title}」を公開しました`:`「${d.title}」を下書きに戻しました`);
+}
+function previewLegalDoc(id){
+  const d=siteDocs.find(x=>x.id===id);
+  admOpenModal(`
+    <h3>${esc(d.title)} <span style="font-size:11px;color:var(--muted)">(プレビュー)</span></h3>
+    <div class="legal-body" style="max-height:60vh;overflow:auto;border:1px solid var(--line);padding:16px 18px">${legalBodyHtml(d.body)}</div>
+    <div class="acts"><button class="btn btn-line btn-md" onclick="admCloseModal()">閉じる</button></div>`);
+  $("admModalBox").classList.add("wide");
+}
+
 function editNotice(id){
   const n=ADM_NOTICES.find(x=>x.id===id)||{t:"",until:""};
   admOpenModal(`
