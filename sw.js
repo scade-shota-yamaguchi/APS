@@ -1,7 +1,7 @@
 /* APS Service Worker — v1.2.0
    ページ(ナビゲーション)は network-first:更新を即反映し、オフライン時のみキャッシュ表示
    静的アセットは cache-first */
-const CACHE = "aps-cache-v1.2.0";
+const CACHE = "aps-cache-v1.2.1";
 const PRECACHE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
