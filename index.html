@@ -5,6 +5,14 @@
   (ログインページ右上に表示されます)
 
   更新履歴:
+  - v1.5.1 2026.07.29 完了に必要な視聴率を80%→90%に変更(COMPLETE_RATE定数)
+  - v1.5.0 2026.07.29 早送り対策:完了条件を実視聴時間ベースに
+      収録時間の80%以上を実際に再生した場合のみ完了(シーク・早送り分は不算入)。
+      アドミンのコンテンツ管理で「実視聴時間/再生位置」を切替可能。
+      実プレイヤーに「完了まであと◯◯の視聴が必要」を表示
+  - v1.4.1 2026.07.29 「続きから再生」ボックスに動画サムネイルを表示
+      マイページ・C級・B級の続きから再生ボックスに、登録済みYouTube/Vimeoの
+      実サムネイルを表示(未登録レッスンは従来のプレースホルダー)
   - v1.4.0 2026.07.29 動画の実配信+視聴記録+実進捗の管理
       アドミンで登録したYouTube/Vimeoが生徒側レッスンで実再生(公式APIで
       視聴位置を監視、80%で自動完了・しおり・視聴時間を記録)。受講者管理に
@@ -279,7 +287,8 @@ a:hover{text-decoration:underline}
 .module-jump a:hover{border-color:var(--blue);color:var(--blue);text-decoration:none}
 
 .resume-box{border:1px solid var(--line);background:#fff;padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.resume-box .thumb{flex:0 0 128px;height:76px;background:#1a1f26;position:relative;display:flex;align-items:center;justify-content:center}
+.resume-box .thumb{flex:0 0 128px;height:76px;background:#1a1f26 center/cover no-repeat;position:relative;display:flex;align-items:center;justify-content:center}
+.resume-box .thumb.has-img::after{filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
 .resume-box .thumb::after{content:"";width:0;height:0;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;opacity:.9}
 .resume-box .grow{flex:1;min-width:220px}
 
@@ -924,7 +933,7 @@ a:hover{text-decoration:underline}
 </div>
 <script>
 /* ==== バージョン(更新時はここを書き換える) ==== */
-const APP_VERSION="v1.4.0";
+const APP_VERSION="v1.5.1";
 const APP_UPDATED="2026.07.29";
 
 /* ==========================================================
@@ -1448,7 +1457,7 @@ function renderHome(){
   </div>`
   : nl ? `
   <div class="resume-box mt-m">
-    <div class="thumb"></div>
+    ${thumbHtml(nl.id)}
     <div class="grow">
       <div style="font-size:12px;color:var(--muted)">${doneCount()===0&&state.resumeSec===0?"はじめる ／ ":"前回の続き ／ "}${esc(nl.cat.name)}(${esc(instOf(nl))})</div>
       <div style="font-size:17px;font-weight:700;line-height:1.5">${esc(nl.t)}</div>
@@ -1529,7 +1538,7 @@ function renderGradeC(){
 
   ${nl?`
   <div class="resume-box mt-m">
-    <div class="thumb"></div>
+    ${thumbHtml(nl.id)}
     <div class="grow">
       <div style="font-size:12px;color:var(--muted)">前回の続き ／ ${esc(nl.cat.name)}</div>
       <div style="font-size:16px;font-weight:700">${esc(nl.t)}</div>
@@ -1614,7 +1623,7 @@ function renderGradeB(){
 
   ${nl?`
   <div class="resume-box mt-m">
-    <div class="thumb"></div>
+    ${thumbHtml(nl.id)}
     <div class="grow">
       <div style="font-size:12px;color:var(--muted)">前回の続き ／ ${esc(nl.cat.name)}</div>
       <div style="font-size:16px;font-weight:700">${esc(nl.t)}</div>
@@ -1849,7 +1858,7 @@ function renderLesson(id){
   </div>
   <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px">
     <span style="font-size:12px;color:var(--muted)" id="realStatus">${rv.provider==="youtube"?"YouTube":"Vimeo"}動画を読み込んでいます…</span>
-    <span style="font-size:12px;color:var(--faint)">80%以上の視聴で自動的に「完了」となります(視聴位置・視聴時間は記録されます)</span>
+    <span style="font-size:12px;color:var(--faint)">${sitePolicy.strictComplete?`収録時間の${COMPLETE_PCT}%以上を実際に再生すると「完了」になります(早送り・スキップ分は視聴時間に含まれません)`:`${COMPLETE_PCT}%位置までの視聴で自動的に「完了」となります`}</span>
   </div>`
   :`
   <div class="player mt-s">
@@ -1870,7 +1879,7 @@ function renderLesson(id){
       </div>
     </div>
   </div>
-  <p style="font-size:12px;color:var(--faint);margin-top:6px">※ 動画が未登録のため疑似プレイヤーで表示しています(実時間再生)。80%以上の視聴で自動的に「完了」となります。</p>`}
+  <p style="font-size:12px;color:var(--faint);margin-top:6px">※ 動画が未登録のため疑似プレイヤーで表示しています(実時間再生)。${sitePolicy.strictComplete?`収録時間の${COMPLETE_PCT}%以上の実視聴で「完了」になります(早送り分は含まれません)。`:`${COMPLETE_PCT}%以上の視聴で自動的に「完了」となります。`}</p>`}
 
   <div class="grid2 mt-m">
     <div>
@@ -1890,7 +1899,7 @@ function renderLesson(id){
         ${pbar(done?100:Math.round(player.pos/l.dur*100),{ok:done})}
         <span class="pbar-num" id="lsPct">${done?100:Math.round(player.pos/l.dur*100)}%</span>
       </div>
-      <p style="font-size:12.5px;color:var(--muted);margin-top:8px">視聴が80%に達すると完了として記録されます。</p>
+      <p style="font-size:12.5px;color:var(--muted);margin-top:8px">視聴が${COMPLETE_PCT}%に達すると完了として記録されます。</p>
       <div class="mt-s">
         ${done?'<span class="tag tag-ok">完了を記録済み</span>'
           :`<button class="btn btn-line btn-sm" onclick="markDone('${l.id}')">完了にする(デモ操作)</button>`}
@@ -1917,7 +1926,7 @@ function togglePlay(){
       player.pos=Math.min(player.dur, player.pos + 0.25*player.speed);
       addWatch(player.lesson.id, 0.25*player.speed);
       updatePlayerUI();
-      if(player.pos/player.dur>=0.8 && !doneSetFor(player.lesson.grade||"C").has(player.lesson.id)) markDone(player.lesson.id, true);
+      checkComplete(player.lesson, player.pos, player.dur);
       if(player.pos>=player.dur) stopPlayer(true);
     },250);
   } else stopPlayer(true);
@@ -2600,6 +2609,16 @@ function renderSeminars(){
    動画レジストリ(アドミンで登録 → 生徒側で再生)
    localStorage共有。実装時はDB+APIへ。
    ========================================================== */
+/* 完了条件ポリシー(アドミンで設定 → 生徒側の完了判定に反映) */
+const Policy={
+  KEY:"aps_policy_v1",
+  load(){ try{ return { strictComplete:true, ...(JSON.parse(localStorage.getItem(this.KEY))||{}) }; }catch(e){ return { strictComplete:true }; } },
+  save(p){ try{ localStorage.setItem(this.KEY, JSON.stringify(p)); }catch(e){} },
+};
+let sitePolicy=Policy.load();
+const COMPLETE_RATE=0.9;   // レッスン完了に必要な視聴率(90%)
+const COMPLETE_PCT=Math.round(COMPLETE_RATE*100);
+
 const VideoReg={
   KEY:"aps_videos_v1",
   load(){ try{ return JSON.parse(localStorage.getItem(this.KEY))||{}; }catch(e){ return {}; } },
@@ -2607,10 +2626,35 @@ const VideoReg={
 };
 let videoReg=VideoReg.load();
 function videoFor(lessonId){ return videoReg[lessonId]||null; }
+function thumbUrl(lessonId){
+  const v=videoFor(lessonId);
+  if(!v||!v.vid) return null;
+  // YouTubeは公式サムネイルCDN。VimeoはサムネイルにAPIが必要なため、
+  // プロトタイプでは vumbnail.com(Vimeoサムネイルのプロキシ)を利用。実装時はVimeo oEmbed APIへ。
+  return v.provider==="youtube"
+    ? `https://i.ytimg.com/vi/${v.vid}/hqdefault.jpg`
+    : `https://vumbnail.com/${v.vid}.jpg`;
+}
+function thumbHtml(lessonId){
+  const u=thumbUrl(lessonId);
+  return u
+    ? `<div class="thumb has-img" style="background-image:url('${u}')"></div>`
+    : `<div class="thumb"></div>`;
+}
 
 /* ---------- 視聴記録 ---------- */
 let _persistTimer=null;
 function persistSoon(){ clearTimeout(_persistTimer); _persistTimer=setTimeout(persist, 4000); }
+function watchedSec(lessonId){ const w=state.watchLog[lessonId]; return w?w.sec:0; }
+function checkComplete(lesson, pos, dur){
+  if(!lesson||!dur) return;
+  const set=doneSetFor(lesson.grade||"C");
+  if(set.has(lesson.id)) return;
+  const ok = sitePolicy.strictComplete
+    ? watchedSec(lesson.id) >= dur*COMPLETE_RATE   // 早送り・スキップ分は含まれない
+    : pos/dur >= COMPLETE_RATE;
+  if(ok) markDone(lesson.id, true);
+}
 function addWatch(lessonId, sec){
   if(!state.account) return;
   const wl=state.watchLog[lessonId]||(state.watchLog[lessonId]={sec:0});
@@ -2660,9 +2704,16 @@ function onRealTime(pos, dur){
   const st=$("realStatus");
   if(st && dur){
     const done=doneSetFor(l.grade||"C").has(l.id);
-    st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))}${done?" ・ 完了済み":` ・ 完了ライン ${fmtTime(Math.floor(dur*0.8))}`}`;
+    if(done){
+      st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了済み`;
+    }else if(sitePolicy.strictComplete){
+      const need=Math.max(0, Math.ceil(dur*COMPLETE_RATE - watchedSec(l.id)));
+      st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了まであと ${fmtTime(need)} の視聴が必要`;
+    }else{
+      st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了ライン ${fmtTime(Math.floor(dur*COMPLETE_RATE))}`;
+    }
   }
-  if(dur && pos/dur>=0.8 && !doneSetFor(l.grade||"C").has(l.id)) markDone(l.id, true);
+  checkComplete(l, pos, dur);
 }
 function initRealPlayer(l, resume, rv){
   realPlayer.lesson=l; realPlayer.lastPos=resume||0;
@@ -3084,7 +3135,7 @@ function renderContent(){
             <button class="btn btn-line btn-xs" ${li===c.lessons.length-1?"disabled":""} onclick="moveLesson('${c.id}',${li},1)">↓</button>
           </td>
           <td><b>${esc(l.t)}</b><br>
-            <span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴80%</span><br>
+            <span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴${COMPLETE_PCT}%</span><br>
             <span style="display:inline-flex;gap:6px;align-items:center;margin-top:3px">
               ${videoTag(l)}
               ${videoFor(l.id)?`<button class="btn btn-line btn-xs" onclick="previewVideo('${l.id}')">▶ プレビュー</button>`:""}
@@ -3103,6 +3154,20 @@ function renderContent(){
       </tbody>
     </table></div>`).join("")}
 
+  <h2 class="h-bar">レッスンの完了条件</h2>
+  <div class="box box-pad" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="font-size:13px;max-width:46em">
+      <b>${sitePolicy.strictComplete?"実視聴時間モード(推奨・現在有効)":"再生位置モード(現在有効)"}</b><br>
+      <span style="color:var(--muted)">${sitePolicy.strictComplete
+        ?`収録時間の${COMPLETE_PCT}%以上を実際に再生した場合のみ「完了」になります。早送り・スキップした分は視聴時間にカウントされないため、飛ばし見では完了できません。`
+        :`再生位置が${COMPLETE_PCT}%に到達すると「完了」になります。シークで飛ばしても完了できるため、確認・テスト用途向けです。`}</span>
+    </div>
+    <label style="display:flex;align-items:center;gap:10px;font-size:13px;white-space:nowrap">
+      早送りでの完了を防ぐ
+      <span class="switch"><input type="checkbox" ${sitePolicy.strictComplete?"checked":""} onchange="toggleStrictComplete(this.checked)"><span class="tr"></span></span>
+    </label>
+  </div>
+
   <h2 class="h-bar">動画の配信元について</h2>
   <table class="dl-table">
     <tr><th><span class="tag tag-vimeo">Vimeo</span></th>
@@ -3110,7 +3175,7 @@ function renderContent(){
     <tr><th><span class="tag tag-youtube">YouTube</span></th>
       <td><b>一般公開・導入コンテンツ用</b>(無料動画・説明会など)。限定公開はURLを知っていれば誰でも視聴できるため、<u>有料レッスンには使用しないでください</u>。</td></tr>
     <tr><th>登録方法</th>
-      <td>各レッスンの「編集」から配信元を選び、動画URLを貼り付けるだけで登録できます(IDは自動抽出)。登録後は「▶ プレビュー」で再生確認でき、<b>生徒側のレッスンページにも即時反映されます</b>(視聴位置・視聴時間・80%完了が記録されます)。</td></tr>
+      <td>各レッスンの「編集」から配信元を選び、動画URLを貼り付けるだけで登録できます(IDは自動抽出)。登録後は「▶ プレビュー」で再生確認でき、<b>生徒側のレッスンページにも即時反映されます</b>(視聴位置・視聴時間・${COMPLETE_PCT}%完了が記録されます)。</td></tr>
   </table>`;
 }
 function findLesson(id){ for(const g of ["C","B"]) for(const c of CONTENT[g]) { const l=c.lessons.find(x=>x.id===id); if(l) return {l,c}; } return null; }
@@ -3121,6 +3186,13 @@ function moveLesson(cid,idx,dir){
   [c.lessons[idx],c.lessons[j]]=[c.lessons[j],c.lessons[idx]];
   renderContent(); toast("表示順を変更しました");
 }
+function toggleStrictComplete(val){
+  sitePolicy.strictComplete=!!val;
+  Policy.save(sitePolicy);
+  renderContent();
+  toast(val?`完了条件を「実視聴時間${COMPLETE_PCT}%(早送り不可)」にしました`:`完了条件を「再生位置${COMPLETE_PCT}%」にしました`);
+}
+
 /* ---- 動画(YouTube / Vimeo)ユーティリティ ---- */
 function videoTag(l){
   const v=videoFor(l.id);
@@ -3183,7 +3255,7 @@ function editLesson(id){
       <div class="m-field"><label>収録時間(分)</label><input id="elD" type="number" value="${l.dur}"></div>
       <div class="m-field"><label>担当講師</label><input id="elI" value="${esc(l.inst||(f?f.c.inst:""))}"></div>
     </div>
-    <div class="m-field"><label>完了条件(視聴率%)</label><input type="number" value="80"></div>
+    <div class="m-field"><label>完了条件(視聴率%)</label><input type="number" value="90" disabled><div style="font-size:11px;color:var(--faint)">全レッスン共通(コンテンツ管理の完了条件設定に従います)</div></div>
     <div class="grid2">
       <div class="m-field"><label>動画の配信元</label>
         <select id="elProvider" onchange="elProviderChanged()">
