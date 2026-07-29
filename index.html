@@ -1,8 +1,34 @@
 <!DOCTYPE html>
+<!-- ==========================================================
+  測定ライセンス(APS)会員サイト+管理画面
+  バージョンは下記 スクリプト冒頭の APP_VERSION / APP_UPDATED を更新すること
+  (ログインページ右上に表示されます)
+
+  更新履歴:
+  - v1.2.0 2026.07.29 PWA対応+レスポンシブ総合調整
+      manifest/Service Worker/アイコン追加(オフライン起動・ホーム画面追加)、
+      ページはnetwork-firstで常に最新版を配信。スマホ表示の総合調整
+      (表の横スクロール・シェアボタン/操作列の折返し・セーフエリア対応 ほか)
+  - v1.1.0 2026.07.29 動画のYouTube/Vimeo両対応
+      アドミンのレッスン編集に配信元(YouTube=一般公開用/Vimeo=会員限定)と
+      動画URL登録(ID自動抽出)・プレビュー再生を追加。配信元ガイドを掲載
+  - v1.0.0 2026.07.29 本番用フロントエンド初版
+      空の初期状態+localStorage永続化/プラン購入と受講・受験権限/
+      実時間再生・80%完了/試験解放条件・認定番号採番/B級ロック/
+      統合ログイン(メールアドレスで会員・管理者を判定、管理者は2FA)
+  ========================================================== -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#141416">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="APS">
 <title>APS 測定ライセンス｜アスレティックパフォーマンスサイエンティスト認定</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -462,13 +488,82 @@ a:hover{text-decoration:underline}
   #adminShell .page{padding:0 14px 80px}
 }
 
+/* 配信元タグ(YouTube / Vimeo) */
+.tag-youtube{color:#c4302b;border-color:#c4302b;background:#fdecea}
+.tag-vimeo{color:#0f6d9e;border-color:#1ab7ea;background:#e8f7fd}
+/* 動画プレビューモーダル */
+.video-embed{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* バージョン表記(ログインページ右上) */
+.ver-badge{position:fixed;top:14px;right:18px;font-size:11px;color:var(--faint);letter-spacing:.06em;z-index:5;font-feature-settings:"tnum";user-select:none}
+@media (max-width:960px){.ver-badge{top:10px;right:12px;font-size:10px}}
+/* ==========================================================
+   レスポンシブ総合調整(v1.2.0)
+   ========================================================== */
+/* 表は縮めず横スクロールで守る(会員・アドミン共通) */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#adminShell .data-table{min-width:660px}
+@media (max-width:960px){
+  /* タイポと余白 */
+  body{font-size:14px}
+  .page-lead{font-size:13px}
+  /* プレイヤー操作列の折返し */
+  .player-controls{flex-wrap:wrap;gap:8px}
+  .player-controls .sp{display:none}
+  /* SNSシェアはフル幅ボタンに */
+  .share-row{flex-direction:column}
+  .share-row .share-btn{width:100%;justify-content:center}
+  /* 試験:設問パレットを小さく */
+  .qpalette button{width:34px;height:34px;font-size:11.5px}
+  .exam-topbar{flex-wrap:wrap;gap:8px}
+  /* モーダル */
+  .modal{padding:22px 18px}
+  #admModalBg .modal{padding:22px 16px}
+  .modal .acts .btn,#admModalBg .acts .btn{flex:1;min-width:0}
+  /* アドミン:縦棒グラフのラベル */
+  .vbar .vl{font-size:9.5px}
+  .vbar .lb{font-size:9.5px}
+  /* アドミン:table-tools を縦積み */
+  .table-tools{flex-direction:column;align-items:stretch}
+  .table-tools .spacer{display:none}
+  .table-tools input[type=search]{min-width:0;width:100%}
+  /* KPI数値 */
+  .kpi .val{font-size:23px}
+  /* お知らせ行 */
+  .news-row .date{flex-basis:100%}
+}
+@media (max-width:480px){
+  .page-title{font-size:20px}
+  .h-bar{font-size:16px}
+  .box-pad{padding:14px 12px}
+  .otp-row{gap:6px}
+  .otp-row input{width:40px;height:48px;font-size:19px}
+  .resume-box{flex-direction:column;align-items:stretch}
+  .resume-box .thumb{width:100%;height:120px}
+  .kpi{padding:14px 14px}
+  .lesson-table td{padding:8px 10px}
+  .btn-md{width:100%}
+  .cert-name-overlay{font-size:5cqw}
+}
+/* PWAスタンドアロン表示:iOSノッチ等のセーフエリア対応 */
+@media all and (display-mode: standalone){
+  .member-topbar{padding-top:calc(10px + env(safe-area-inset-top))}
+  #adminShell .topbar{padding-top:calc(9px + env(safe-area-inset-top))}
+  .pub-header{padding-top:env(safe-area-inset-top)}
+  .ver-badge{top:calc(14px + env(safe-area-inset-top))}
+}
+/* インストールボタン(対応ブラウザでのみ表示) */
+.install-box{display:none;margin-top:28px;border:1px dashed var(--line);padding:16px 18px;text-align:center}
+.install-box.show{display:block}
+.install-box p{font-size:12.5px;color:var(--muted);margin-bottom:10px}
 </style>
 </head>
 <body>
 <div id="toast" class="toast"></div>
 
 <!-- ============ 未ログイン(公開)エリア ============ -->
-<div id="authArea">
+<div id="authArea" style="position:relative">
+  <div class="ver-badge" id="verBadge" title="サイトのバージョン"></div>
   <header class="pub-header">
     <div class="pub-header-inner">
       <div class="pub-logo">
@@ -494,6 +589,11 @@ a:hover{text-decoration:underline}
     <div class="join-box">
       <div class="jt">入会や利用登録がまだの方はこちら</div>
       <button class="btn btn-blue btn-lg" onclick="showAuth('register')">入会申し込み</button>
+    </div>
+
+    <div class="install-box" id="installBox">
+      <p>このサイトはアプリとしてホーム画面に追加できます(オフラインでも起動できます)。</p>
+      <button class="btn btn-line btn-md" onclick="promptInstall()">📱 アプリとしてインストール</button>
     </div>
 
     <h2 class="h-bar" style="margin-top:64px">資格区分のご案内</h2>
@@ -778,6 +878,10 @@ a:hover{text-decoration:underline}
   <div class="cap"><span class="rec"></span><span id="camCapText">REC — SNAPSHOT/30s</span></div>
 </div>
 <script>
+/* ==== バージョン(更新時はここを書き換える) ==== */
+const APP_VERSION="v1.2.0";
+const APP_UPDATED="2026.07.29";
+
 /* ==========================================================
    状態管理(デモ用インメモリ。実装時はAPI/DBに置き換え)
    ========================================================== */
@@ -2370,7 +2474,30 @@ function renderSeminars(){
   </div>`;
 }
 
+/* ---------- PWA:Service Worker とインストール ---------- */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{ /* 単体ファイルで開いた場合などは無視 */ });
+  });
+}
+let deferredInstall=null;
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstall=e;
+  const b=$("installBox"); if(b) b.classList.add("show");
+});
+window.addEventListener("appinstalled",()=>{
+  const b=$("installBox"); if(b) b.classList.remove("show");
+  toast("アプリをインストールしました");
+});
+function promptInstall(){
+  if(!deferredInstall){ toast("このブラウザではメニューから「ホーム画面に追加」を選択してください"); return; }
+  deferredInstall.prompt();
+  deferredInstall.userChoice.finally(()=>{ deferredInstall=null; const b=$("installBox"); if(b) b.classList.remove("show"); });
+}
+
 /* ---------- 初期化 ---------- */
+{ const vb=$("verBadge"); if(vb) vb.textContent=`${APP_VERSION}(${APP_UPDATED} 更新)`; }
 updateNoticeBadge();
 showAuth("login");
 if(state.account){ const le=$("loginEmail"); if(le) le.value=state.account.email; }
@@ -2384,10 +2511,10 @@ if(state.account){ const le=$("loginEmail"); if(le) le.value=state.account.email
 const CONTENT = {
   C: [
     { id:"m0", name:"特別講義", inst:"山下", lessons:[
-      { id:"m0-1", t:"スポーツサイエンティストの国際情勢", dur:60, pub:true, views:412, comp:88 } ]},
+      { id:"m0-1", t:"スポーツサイエンティストの国際情勢", dur:60, pub:true, views:412, comp:88, video:{provider:"youtube", vid:"dQw4w9WgXcQ"} } ]},
     { id:"m1", name:"測定の知識", inst:"西海", lessons:[
-      { id:"m1-1", t:"測定・モニタリングの設計", dur:60, pub:true, views:398, comp:84 },
-      { id:"m1-2", t:"測定機器の知識", dur:90, pub:true, views:371, comp:79 } ]},
+      { id:"m1-1", t:"測定・モニタリングの設計", dur:60, pub:true, views:398, comp:84, video:{provider:"vimeo", vid:"76979871"} },
+      { id:"m1-2", t:"測定機器の知識", dur:90, pub:true, views:371, comp:79, video:{provider:"vimeo", vid:"76979871"} } ]},
     { id:"m2", name:"データ分析/評価の知識", inst:"西海", lessons:[
       { id:"m2-1", t:"統計・分析の知識", dur:150, pub:true, views:344, comp:66 },
       { id:"m2-2", t:"評価とフィードバックの知識", dur:60, pub:true, views:329, comp:81 } ]},
@@ -2622,7 +2749,12 @@ function renderContent(){
             <button class="btn btn-line btn-xs" ${li===0?"disabled":""} onclick="moveLesson('${c.id}',${li},-1)">↑</button>
             <button class="btn btn-line btn-xs" ${li===c.lessons.length-1?"disabled":""} onclick="moveLesson('${c.id}',${li},1)">↓</button>
           </td>
-          <td><b>${esc(l.t)}</b><br><span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴80%</span></td>
+          <td><b>${esc(l.t)}</b><br>
+            <span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴80%</span><br>
+            <span style="display:inline-flex;gap:6px;align-items:center;margin-top:3px">
+              ${videoTag(l)}
+              ${l.video&&l.video.vid?`<button class="btn btn-line btn-xs" onclick="previewVideo('${l.id}')">▶ プレビュー</button>`:""}
+            </span></td>
           <td>${esc(l.inst||c.inst)}</td>
           <td class="c">${admFmtMin(l.dur)}</td>
           <td class="c">${l.views}</td>
@@ -2637,11 +2769,15 @@ function renderContent(){
       </tbody>
     </table></div>`).join("")}
 
-  <h2 class="h-bar">動画のアップロード</h2>
-  <div class="box box-pad" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-    <p style="font-size:13px;color:var(--muted)">動画は配信基盤(Vimeo / Cloudflare Stream 等・要件定義書12.2)へアップロードし、レッスンに紐づけます。</p>
-    <button class="btn btn-blue btn-md" onclick="toast('アップロード画面を開きます(デモ)')">動画をアップロード</button>
-  </div>`;
+  <h2 class="h-bar">動画の配信元について</h2>
+  <table class="dl-table">
+    <tr><th><span class="tag tag-vimeo">Vimeo</span></th>
+      <td><b>会員限定レッスン用。</b>Vimeo側で「特定ドメインでのみ埋め込み可」を必ず設定し、当サイト以外での再生・リンク共有を防ぎます。プレーヤーのロゴ非表示・カラー設定もVimeo側で行います。</td></tr>
+    <tr><th><span class="tag tag-youtube">YouTube</span></th>
+      <td><b>一般公開・導入コンテンツ用</b>(無料動画・説明会など)。限定公開はURLを知っていれば誰でも視聴できるため、<u>有料レッスンには使用しないでください</u>。</td></tr>
+    <tr><th>登録方法</th>
+      <td>各レッスンの「編集」から配信元を選び、動画URLを貼り付けるだけで登録できます(IDは自動抽出)。登録後は「▶ プレビュー」で再生確認できます。</td></tr>
+  </table>`;
 }
 function findLesson(id){ for(const g of ["C","B"]) for(const c of CONTENT[g]) { const l=c.lessons.find(x=>x.id===id); if(l) return {l,c}; } return null; }
 function togglePub(cid,lid,val){ const f=findLesson(lid); if(f){ f.l.pub=val; toast(`「${f.l.t}」を${val?"公開":"非公開"}にしました`); } }
@@ -2651,9 +2787,59 @@ function moveLesson(cid,idx,dir){
   [c.lessons[idx],c.lessons[j]]=[c.lessons[j],c.lessons[idx]];
   renderContent(); toast("表示順を変更しました");
 }
+/* ---- 動画(YouTube / Vimeo)ユーティリティ ---- */
+function videoTag(l){
+  if(!l.video||!l.video.vid) return '<span class="tag tag-gray">動画未登録</span>';
+  return l.video.provider==="youtube"
+    ? '<span class="tag tag-youtube">YouTube(一般公開用)</span>'
+    : '<span class="tag tag-vimeo">Vimeo(会員限定)</span>';
+}
+function parseVideoInput(provider, input){
+  // URLでもIDでも受け付ける。抽出できなければ null を返す
+  const t=(input||"").trim();
+  if(!t) return null;
+  if(provider==="youtube"){
+    const m=t.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,20})/)
+          || (/^[A-Za-z0-9_-]{6,20}$/.test(t) ? [null,t] : null);
+    return m ? m[1] : null;
+  }
+  if(provider==="vimeo"){
+    const m=t.match(/vimeo\.com\/(?:video\/)?(\d{6,12})/) || (/^\d{6,12}$/.test(t) ? [null,t] : null);
+    return m ? m[1] : null;
+  }
+  return null;
+}
+function embedUrl(v){
+  return v.provider==="youtube"
+    ? `https://www.youtube.com/embed/${v.vid}?rel=0`
+    : `https://player.vimeo.com/video/${v.vid}`;
+}
+function previewVideo(lessonId){
+  const f=findLesson(lessonId);
+  if(!f||!f.l.video||!f.l.video.vid){ toast("動画が登録されていません"); return; }
+  const v=f.l.video;
+  admOpenModal(`
+    <h3>動画プレビュー — ${esc(f.l.t)}</h3>
+    <p class="sub">${v.provider==="youtube"?"YouTube":"Vimeo"} ／ ID: ${esc(v.vid)}</p>
+    <div class="video-embed"><iframe src="${embedUrl(v)}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="動画プレビュー"></iframe></div>
+    <div class="acts"><button class="btn btn-line btn-md" onclick="admCloseModal()">閉じる</button></div>`);
+}
+function elProviderChanged(){
+  const pv=$("elProvider").value;
+  const hint=$("elVidHint");
+  if(!hint) return;
+  hint.textContent = pv==="youtube"
+    ? "動画URL(youtube.com/watch?v=… / youtu.be/…)または動画IDを貼り付けてください。一般公開・導入コンテンツ向け。"
+    : pv==="vimeo"
+    ? "動画URL(vimeo.com/…)または動画IDを貼り付けてください。会員限定レッスン向け(ドメイン制限を設定すること)。"
+    : "配信元を選択すると動画を登録できます。";
+  $("elVid").disabled = pv==="none";
+}
 function editLesson(id){
   const f=id?findLesson(id):null;
-  const l=f?f.l:{t:"",dur:60,inst:"",pub:false};
+  const l=f?f.l:{t:"",dur:60,inst:"",pub:false,video:null};
+  const v=l.video||{provider:"none",vid:""};
+  const curUrl = l.video&&l.video.vid ? (l.video.provider==="youtube"?`https://youtu.be/${l.video.vid}`:`https://vimeo.com/${l.video.vid}`) : "";
   admOpenModal(`
     <h3>${id?"レッスンの編集":"レッスンの新規追加"}</h3>
     <p class="sub">${id?esc(l.id):"保存時にIDが採番されます"}</p>
@@ -2663,15 +2849,44 @@ function editLesson(id){
       <div class="m-field"><label>担当講師</label><input id="elI" value="${esc(l.inst||(f?f.c.inst:""))}"></div>
     </div>
     <div class="m-field"><label>完了条件(視聴率%)</label><input type="number" value="80"></div>
-    <div class="m-field"><label>動画ファイル</label><input type="file" disabled><div style="font-size:11.5px;color:var(--faint)">デモのためアップロードは無効です(実装時は配信基盤へ)。</div></div>
+    <div class="grid2">
+      <div class="m-field"><label>動画の配信元</label>
+        <select id="elProvider" onchange="elProviderChanged()">
+          <option value="none" ${v.provider!=="youtube"&&v.provider!=="vimeo"?"selected":""}>未登録</option>
+          <option value="vimeo" ${v.provider==="vimeo"?"selected":""}>Vimeo(会員限定レッスン)</option>
+          <option value="youtube" ${v.provider==="youtube"?"selected":""}>YouTube(一般公開・導入用)</option>
+        </select>
+      </div>
+      <div class="m-field"><label>動画URL または 動画ID</label>
+        <input id="elVid" value="${esc(curUrl)}" placeholder="URLを貼り付け" ${v.provider==="none"?"disabled":""}>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:var(--faint);margin:-6px 0 14px" id="elVidHint"></div>
     <div class="acts">
       <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
       <button class="btn btn-blue btn-md" onclick="saveLesson('${id||""}')">保存する</button>
     </div>`);
+  elProviderChanged();
 }
 function saveLesson(id){
-  if(id){ const f=findLesson(id); if(f){ f.l.t=$("elT").value||f.l.t; f.l.dur=parseInt($("elD").value)||f.l.dur; f.l.inst=$("elI").value; } }
-  admCloseModal(); renderContent(); toast(id?"レッスンを更新しました":"レッスンを追加しました(デモ)");
+  const provider=$("elProvider")?$("elProvider").value:"none";
+  let video=null;
+  if(provider!=="none"){
+    const vid=parseVideoInput(provider,$("elVid").value);
+    if(!vid){ toast(provider==="youtube"?"YouTubeのURLまたはIDを確認してください":"VimeoのURLまたはIDを確認してください"); return; }
+    video={provider,vid};
+  }
+  if(id){
+    const f=findLesson(id);
+    if(f){
+      f.l.t=$("elT").value||f.l.t;
+      f.l.dur=parseInt($("elD").value)||f.l.dur;
+      f.l.inst=$("elI").value;
+      f.l.video=video;
+    }
+  }
+  admCloseModal(); renderContent();
+  toast(id?(video?`レッスンを更新し、${video.provider==="youtube"?"YouTube":"Vimeo"}動画を登録しました`:"レッスンを更新しました"):"レッスンを追加しました(デモ)");
 }
 
 /* ---------- 受講者管理 ---------- */
