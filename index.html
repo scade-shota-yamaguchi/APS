@@ -5,6 +5,14 @@
   (ログインページ右上に表示されます)
 
   更新履歴:
+  - v1.4.0 2026.07.29 動画の実配信+視聴記録+実進捗の管理
+      アドミンで登録したYouTube/Vimeoが生徒側レッスンで実再生(公式APIで
+      視聴位置を監視、80%で自動完了・しおり・視聴時間を記録)。受講者管理に
+      「実際の受講者」を追加し、実アカウントの進捗・レッスン別視聴記録を閲覧可能
+  - v1.3.1 2026.07.29 デモ生徒アカウント+アカウント保存方式の改善
+      student@s-cade.com の組み込み生徒アカウントを追加(受講+受験購入済みで
+      即ログイン可、ログイン画面に案内を表示)。保存をメールアドレス別に変更し、
+      デモと実登録アカウントが同じ端末で共存可能に(旧データは自動移行)
   - v1.3.0 2026.07.29 規約・ポリシー管理を追加
       アドミンに文書管理ページ(プライバシーポリシー/利用規約/特商法表記の
       編集・公開/下書き・プレビュー・新規追加)。フッターと入会同意文のリンクに
@@ -504,6 +512,8 @@ a:hover{text-decoration:underline}
 /* 動画プレビューモーダル */
 .video-embed{position:relative;width:100%;aspect-ratio:16/9;background:#000}
 .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-embed>div{position:absolute;inset:0}
+.video-embed>div iframe{width:100%;height:100%}
 /* バージョン表記(ログインページ右上) */
 .ver-badge{position:fixed;top:14px;right:18px;font-size:11px;color:var(--faint);letter-spacing:.06em;z-index:5;font-feature-settings:"tnum";user-select:none}
 @media (max-width:960px){.ver-badge{top:10px;right:12px;font-size:10px}}
@@ -605,6 +615,12 @@ a:hover{text-decoration:underline}
     <div class="join-box">
       <div class="jt">入会や利用登録がまだの方はこちら</div>
       <button class="btn btn-blue btn-lg" onclick="showAuth('register')">入会申し込み</button>
+    </div>
+
+    <div style="margin-top:24px;border:1px solid var(--line);background:var(--bg-gray);padding:14px 16px;font-size:12.5px;color:var(--muted)">
+      <b style="color:var(--ink)">動作確認用デモアカウント</b><br>
+      メール:<code style="user-select:all">student@s-cade.com</code> ／ パスワード:<code style="user-select:all">sh@Osmejd2</code><br>
+      受講+受験セット購入済みの生徒としてログインできます(進捗は各自のブラウザに保存)。
     </div>
 
     <div class="install-box" id="installBox">
@@ -853,6 +869,7 @@ a:hover{text-decoration:underline}
       <div id="view-adm-content" class="hide"></div>
       <div id="view-adm-students" class="hide"></div>
       <div id="view-adm-studentDetail" class="hide"></div>
+      <div id="view-adm-realStudent" class="hide"></div>
       <div id="view-adm-exam" class="hide"></div>
       <div id="view-adm-proctor" class="hide"></div>
       <div id="view-adm-proctorDetail" class="hide"></div>
@@ -907,7 +924,7 @@ a:hover{text-decoration:underline}
 </div>
 <script>
 /* ==== バージョン(更新時はここを書き換える) ==== */
-const APP_VERSION="v1.3.0";
+const APP_VERSION="v1.4.0";
 const APP_UPDATED="2026.07.29";
 
 /* ==========================================================
@@ -1124,12 +1141,45 @@ function allLessonIds(){ return [].concat(...[["m0-1"],["m1-1","m1-2"],["m2-1","
      差し替えるだけで移行できる構造にしている
    ========================================================== */
 const Store = {
-  KEY: "aps_member_v1",
+  // メールアドレスごとに保存(複数アカウント共存可)。旧単一キーからは自動移行。
+  PREFIX: "aps_member_v1::",
+  LAST: "aps_last_email",
   available: (()=>{ try{ localStorage.setItem("__aps_t","1"); localStorage.removeItem("__aps_t"); return true; }catch(e){ return false; } })(),
-  mem: null,   // localStorage が使えない環境用のフォールバック(タブを閉じると消える)
-  load(){ if(!this.available) return this.mem; try{ return JSON.parse(localStorage.getItem(this.KEY)); }catch(e){ return null; } },
-  save(o){ if(!this.available){ this.mem=o; return; } try{ localStorage.setItem(this.KEY, JSON.stringify(o)); }catch(e){} },
-  clear(){ if(this.available) localStorage.removeItem(this.KEY); this.mem=null; },
+  mem: {},   // localStorage が使えない環境用フォールバック(タブを閉じると消える)
+  keyFor(email){ return this.PREFIX+String(email||"").toLowerCase(); },
+  load(email){
+    if(!this.available) return this.mem[this.keyFor(email)]||null;
+    try{ return JSON.parse(localStorage.getItem(this.keyFor(email))); }catch(e){ return null; }
+  },
+  save(email,o){
+    if(!this.available){ this.mem[this.keyFor(email)]=o; return; }
+    try{
+      localStorage.setItem(this.keyFor(email), JSON.stringify(o));
+      localStorage.setItem(this.LAST, String(email||"").toLowerCase());
+    }catch(e){}
+  },
+  remove(email){
+    if(this.available){
+      localStorage.removeItem(this.keyFor(email));
+      if(localStorage.getItem(this.LAST)===String(email||"").toLowerCase()) localStorage.removeItem(this.LAST);
+    }
+    delete this.mem[this.keyFor(email)];
+  },
+  lastEmail(){ return this.available ? localStorage.getItem(this.LAST) : null; },
+  migrate(){  // v1.2以前の単一キーをメール別キーへ
+    if(!this.available) return;
+    try{
+      const old=localStorage.getItem("aps_member_v1");
+      if(old){
+        const o=JSON.parse(old);
+        if(o&&o.account&&o.account.email){
+          localStorage.setItem(this.keyFor(o.account.email), old);
+          localStorage.setItem(this.LAST, o.account.email.toLowerCase());
+        }
+        localStorage.removeItem("aps_member_v1");
+      }
+    }catch(e){}
+  },
 };
 
 function defaultState(){
@@ -1142,21 +1192,28 @@ function defaultState(){
     attempts: [],                        // 受験履歴 [{date,score,pass,warns,timeout}]
     payments: [],                        // 支払い履歴
     entitlements: { course:false, exam:false },  // 受講権限・受験権限
+    watchLog: {},                        // レッスン別視聴記録 { lessonId: {sec, last, done} }
     readNotices: [],
     examStage: "intro", lastResult: null, view: "home", loggedIn: false,
   };
 }
 let state = defaultState();
-(function restoreState(){
-  const raw = Store.load();
-  if(!raw || !raw.account) return;
+function hydrateState(raw){
   state = { ...defaultState(), ...raw };
   state.done = new Set(raw.done||[]);
   state.bdone = new Set(raw.bdone||[]);
   state.loggedIn=false; state.view="home"; state.examStage="intro"; state.lastResult=null;
+}
+(function restoreState(){
+  Store.migrate();
+  const last = Store.lastEmail();
+  if(!last) return;
+  const raw = Store.load(last);
+  if(raw && raw.account) hydrateState(raw);  // ログイン欄のプリフィル用(ログイン自体は要認証)
 })();
 function persist(){
-  Store.save({
+  if(!state.account || !state.account.email) return;
+  Store.save(state.account.email, {
     ...state,
     done:[...state.done], bdone:[...state.bdone],
     loggedIn:undefined, view:undefined, examStage:undefined, lastResult:undefined,
@@ -1226,6 +1283,25 @@ function showAuth(which){
   $("view"+which.charAt(0).toUpperCase()+which.slice(1)).classList.remove("hide");
   window.scrollTo({top:0});
 }
+/* 動作確認用のデモ生徒アカウント(組み込み)
+   ログインすると自動で「受講+受験セット」購入済みの状態が用意される。
+   進捗はブラウザに保存され、退会すると初期化される。 */
+const DEMO_STUDENT = {
+  email:"student@s-cade.com",
+  name:"デモ 生徒", kana:"デモ セイト", org:"S-CADE.(動作確認用)",
+  passHash:"662891bf06e78358a61d38da0362d64ea7f4555db038c6b6ebc9ed520f0b4240",
+};
+function seedDemoStudent(){
+  state=defaultState();
+  state.account={ name:DEMO_STUDENT.name, kana:DEMO_STUDENT.kana, org:DEMO_STUDENT.org,
+    email:DEMO_STUDENT.email, passHash:DEMO_STUDENT.passHash, plan:"full", joined:today() };
+  state.user={ name:DEMO_STUDENT.name, kana:DEMO_STUDENT.kana, org:DEMO_STUDENT.org, email:DEMO_STUDENT.email };
+  state.payments.push({ id:newPaymentId(), date:today(), kind:"受講料",
+    item:"C級 受講+受験セット", method:"クレジットカード(Stripe)", amount:49800, taxRate:0.10, status:"paid" });
+  state.entitlements={ course:true, exam:true };
+  persist();
+}
+
 const PLANS = {
   full:   { label:"C級 受講+受験セット", amount:49800, course:true,  exam:true  },
   course: { label:"C級 受講のみ",        amount:35000, course:true,  exam:false },
@@ -1256,11 +1332,14 @@ async function doRegister(){
   const pass=$("regPass").value||"";
   if(!name||!email){ toast("氏名とメールアドレスを入力してください"); return; }
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast("メールアドレスの形式が正しくありません"); return; }
-  if(ADMIN_ACCOUNTS.some(a=>a.email===email.toLowerCase())){ toast("このメールアドレスは使用できません"); return; }
+  if(ADMIN_ACCOUNTS.some(a=>a.email===email.toLowerCase()) || email.toLowerCase()===DEMO_STUDENT.email){ toast("このメールアドレスは使用できません"); return; }
   if(pass.length<8 || !/[a-zA-Z]/.test(pass) || !/[0-9]/.test(pass)){ toast("パスワードは8文字以上で英字と数字を含めてください"); return; }
   if(!$("agreeTos").checked){ toast("利用規約への同意が必要です"); return; }
-  if(state.account){
-    if(!confirm("この端末には既にアカウントが登録されています。上書きして新規登録しますか?(既存の進捗・資格は削除されます)")) return;
+  {
+    const existing=Store.load(email);
+    if(existing && existing.account){
+      if(!confirm("このメールアドレスのアカウントが既にこの端末に存在します。上書きして新規登録しますか?(既存の進捗・資格は削除されます)")) return;
+    }
     state=defaultState();
   }
   const planKey=$("regPlan").value;
@@ -1290,7 +1369,7 @@ function doLogout(){
 }
 function deleteAccount(){
   closeModal("modalQuit");
-  Store.clear();
+  if(state.account && state.account.email) Store.remove(state.account.email);
   state=defaultState();
   stopExamTimer(); stopCam(); stopPlayer();
   $("memberShell").classList.remove("active");
@@ -1751,17 +1830,28 @@ function renderLesson(id){
   stopPlayer();
   player.lesson=l; player.dur=l.dur; player.speed=1;
   player.pos = (l.id===curId && !set.has(l.id)) ? resume : 0;
+  setTimeout(()=>{ const rv2=videoFor(l.id); if(rv2 && $("realPlayer")) initRealPlayer(l, player.pos, rv2); }, 0);
   const idx=list.findIndex(x=>x.id===l.id);
   const prev=list[idx-1], next=list[idx+1];
   const done=set.has(l.id);
   const nextExamTarget = grade==="B" ? "gradeB" : "exam"; // B級はデモのため試験未実装→講座トップへ
 
+  const rv=videoFor(l.id);
   $("view-lesson").innerHTML = `
   ${crumb([`<a href="javascript:void(0)" onclick="go('${gradeView}')">${gradeLabel}</a>`, esc(l.t)])}
   <h1 class="page-title" style="font-size:23px">${esc(l.t)}</h1>
   <p class="page-lead">${esc(l.cat.name)} ／ 担当:${esc(instOf(l))} ／ 収録時間:約${fmtMin(l.dur)}
     ${done?'<span class="tag tag-ok" style="margin-left:10px">完了済み</span>':''}</p>
 
+  ${rv?`
+  <div class="player mt-s" style="background:#000">
+    <div class="video-embed"><div id="realPlayer"></div></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px">
+    <span style="font-size:12px;color:var(--muted)" id="realStatus">${rv.provider==="youtube"?"YouTube":"Vimeo"}動画を読み込んでいます…</span>
+    <span style="font-size:12px;color:var(--faint)">80%以上の視聴で自動的に「完了」となります(視聴位置・視聴時間は記録されます)</span>
+  </div>`
+  :`
   <div class="player mt-s">
     <div class="player-screen">
       <span class="label">APS ${grade}級講座 ／ ${esc(instOf(l))}</span>
@@ -1780,7 +1870,7 @@ function renderLesson(id){
       </div>
     </div>
   </div>
-  <p style="font-size:12px;color:var(--faint);margin-top:6px">※ デモ版のため再生は高速シミュレーションです(実装時は動画配信基盤+アダプティブ配信)。80%以上の視聴で自動的に「完了」となります。</p>
+  <p style="font-size:12px;color:var(--faint);margin-top:6px">※ 動画が未登録のため疑似プレイヤーで表示しています(実時間再生)。80%以上の視聴で自動的に「完了」となります。</p>`}
 
   <div class="grid2 mt-m">
     <div>
@@ -1825,6 +1915,7 @@ function togglePlay(){
     // timeupdate イベントに差し替える。シークバー操作も可能。
     player.timer=setInterval(()=>{
       player.pos=Math.min(player.dur, player.pos + 0.25*player.speed);
+      addWatch(player.lesson.id, 0.25*player.speed);
       updatePlayerUI();
       if(player.pos/player.dur>=0.8 && !doneSetFor(player.lesson.grade||"C").has(player.lesson.id)) markDone(player.lesson.id, true);
       if(player.pos>=player.dur) stopPlayer(true);
@@ -1832,6 +1923,7 @@ function togglePlay(){
   } else stopPlayer(true);
 }
 function stopPlayer(keepPos){
+  stopRealPlayer(true);
   clearInterval(player.timer); player.timer=null; player.playing=false;
   const bp=$("bigPlay"); if(bp) bp.classList.remove("pause");
   if(player.lesson && keepPos){
@@ -1871,6 +1963,8 @@ function markDone(id, silent){
   const idx=list.findIndex(l=>l.id===id);
   const nx=list.slice(idx+1).find(l=>!set.has(l.id))||list.find(l=>!set.has(l.id));
   if(nx){ if(grade==="B"){ state.bcurrent=nx.id; state.bresumeSec=0; } else { state.current=nx.id; state.resumeSec=0; } }
+  const wl=state.watchLog[id]||(state.watchLog[id]={sec:0});
+  wl.done=today();
   persist(); updateNavBadges();
   toast(`「${list[idx].t}」を完了として記録しました`);
   if(grade==="C" && allDone()) setTimeout(()=>toast(state.entitlements.exam?"全レッスン完了です。C級認定試験を受験できます":"全レッスン完了です。受験には「受験のみ」プランの購入が必要です"),1400);
@@ -2503,6 +2597,103 @@ function renderSeminars(){
 }
 
 /* ==========================================================
+   動画レジストリ(アドミンで登録 → 生徒側で再生)
+   localStorage共有。実装時はDB+APIへ。
+   ========================================================== */
+const VideoReg={
+  KEY:"aps_videos_v1",
+  load(){ try{ return JSON.parse(localStorage.getItem(this.KEY))||{}; }catch(e){ return {}; } },
+  save(m){ try{ localStorage.setItem(this.KEY, JSON.stringify(m)); }catch(e){} },
+};
+let videoReg=VideoReg.load();
+function videoFor(lessonId){ return videoReg[lessonId]||null; }
+
+/* ---------- 視聴記録 ---------- */
+let _persistTimer=null;
+function persistSoon(){ clearTimeout(_persistTimer); _persistTimer=setTimeout(persist, 4000); }
+function addWatch(lessonId, sec){
+  if(!state.account) return;
+  const wl=state.watchLog[lessonId]||(state.watchLog[lessonId]={sec:0});
+  wl.sec=Math.round((wl.sec+sec)*10)/10;
+  wl.last=today();
+  persistSoon();
+}
+
+/* ---------- 実プレイヤー(YouTube IFrame API / Vimeo Player SDK) ---------- */
+let _ytQueue=null;
+function ensureYT(cb){
+  if(window.YT && window.YT.Player){ cb(); return; }
+  if(_ytQueue){ _ytQueue.push(cb); return; }
+  _ytQueue=[cb];
+  window.onYouTubeIframeAPIReady=()=>{ const q=_ytQueue||[]; _ytQueue=null; q.forEach(f=>{ try{f();}catch(e){} }); };
+  const t=document.createElement("script"); t.src="https://www.youtube.com/iframe_api"; document.head.appendChild(t);
+}
+let _vmQueue=null;
+function ensureVimeo(cb){
+  if(window.Vimeo && window.Vimeo.Player){ cb(); return; }
+  if(_vmQueue){ _vmQueue.push(cb); return; }
+  _vmQueue=[cb];
+  const t=document.createElement("script"); t.src="https://player.vimeo.com/api/player.js";
+  t.onload=()=>{ const q=_vmQueue||[]; _vmQueue=null; q.forEach(f=>{ try{f();}catch(e){} }); };
+  document.head.appendChild(t);
+}
+const realPlayer={ mode:null, yt:null, vp:null, timer:null, lesson:null, lastPos:0, dur:0 };
+function saveRealBookmark(){
+  const l=realPlayer.lesson; if(!l) return;
+  const g=l.grade||"C";
+  if(g==="B" && l.id===state.bcurrent) state.bresumeSec=Math.floor(realPlayer.lastPos);
+  else if(g==="C" && l.id===state.current) state.resumeSec=Math.floor(realPlayer.lastPos);
+}
+function stopRealPlayer(flush){
+  if(realPlayer.timer){ clearInterval(realPlayer.timer); realPlayer.timer=null; }
+  try{ if(realPlayer.yt && realPlayer.yt.destroy) realPlayer.yt.destroy(); }catch(e){}
+  try{ if(realPlayer.vp && realPlayer.vp.destroy) realPlayer.vp.destroy(); }catch(e){}
+  if(flush!==false && realPlayer.lesson){ saveRealBookmark(); persist(); }
+  realPlayer.mode=null; realPlayer.yt=null; realPlayer.vp=null; realPlayer.lesson=null; realPlayer.lastPos=0; realPlayer.dur=0;
+}
+function onRealTime(pos, dur){
+  const l=realPlayer.lesson; if(!l) return;
+  const delta=pos-realPlayer.lastPos;
+  if(delta>0 && delta<3) addWatch(l.id, delta);   // 通常再生分のみ加算(シークはスキップ)
+  realPlayer.lastPos=pos;
+  if(dur) realPlayer.dur=dur;
+  const st=$("realStatus");
+  if(st && dur){
+    const done=doneSetFor(l.grade||"C").has(l.id);
+    st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))}${done?" ・ 完了済み":` ・ 完了ライン ${fmtTime(Math.floor(dur*0.8))}`}`;
+  }
+  if(dur && pos/dur>=0.8 && !doneSetFor(l.grade||"C").has(l.id)) markDone(l.id, true);
+}
+function initRealPlayer(l, resume, rv){
+  realPlayer.lesson=l; realPlayer.lastPos=resume||0;
+  if(rv.provider==="youtube"){
+    realPlayer.mode="yt";
+    ensureYT(()=>{
+      if(realPlayer.lesson!==l) return;
+      try{
+        realPlayer.yt=new YT.Player("realPlayer",{
+          videoId:rv.vid,
+          playerVars:{ rel:0, start:Math.floor(resume||0), playsinline:1 },
+          events:{ onReady:()=>{
+            realPlayer.timer=setInterval(()=>{ try{ onRealTime(realPlayer.yt.getCurrentTime()||0, realPlayer.yt.getDuration()||0); }catch(e){} },1000);
+          }},
+        });
+      }catch(e){}
+    });
+  }else{
+    realPlayer.mode="vimeo";
+    ensureVimeo(()=>{
+      if(realPlayer.lesson!==l) return;
+      try{
+        realPlayer.vp=new Vimeo.Player("realPlayer",{ id:parseInt(rv.vid,10), responsive:true });
+        if(resume) realPlayer.vp.setCurrentTime(resume).catch(()=>{});
+        realPlayer.vp.on("timeupdate", d=>onRealTime(d.seconds, d.duration));
+      }catch(e){}
+    });
+  }
+}
+
+/* ==========================================================
    規約・ポリシー文書(アドミンで編集/ユーザー側で表示)
    localStorage保存のため管理画面の編集がそのまま反映される。実装時はDB+APIへ。
    ========================================================== */
@@ -2654,10 +2845,10 @@ if(state.account){ const le=$("loginEmail"); if(le) le.value=state.account.email
 const CONTENT = {
   C: [
     { id:"m0", name:"特別講義", inst:"山下", lessons:[
-      { id:"m0-1", t:"スポーツサイエンティストの国際情勢", dur:60, pub:true, views:412, comp:88, video:{provider:"youtube", vid:"dQw4w9WgXcQ"} } ]},
+      { id:"m0-1", t:"スポーツサイエンティストの国際情勢", dur:60, pub:true, views:412, comp:88 } ]},
     { id:"m1", name:"測定の知識", inst:"西海", lessons:[
-      { id:"m1-1", t:"測定・モニタリングの設計", dur:60, pub:true, views:398, comp:84, video:{provider:"vimeo", vid:"76979871"} },
-      { id:"m1-2", t:"測定機器の知識", dur:90, pub:true, views:371, comp:79, video:{provider:"vimeo", vid:"76979871"} } ]},
+      { id:"m1-1", t:"測定・モニタリングの設計", dur:60, pub:true, views:398, comp:84 },
+      { id:"m1-2", t:"測定機器の知識", dur:90, pub:true, views:371, comp:79 } ]},
     { id:"m2", name:"データ分析/評価の知識", inst:"西海", lessons:[
       { id:"m2-1", t:"統計・分析の知識", dur:150, pub:true, views:344, comp:66 },
       { id:"m2-2", t:"評価とフィードバックの知識", dur:60, pub:true, views:329, comp:81 } ]},
@@ -2781,20 +2972,20 @@ function admCloseModal(){ $("admModalBg").classList.remove("show"); $("admModalB
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") admCloseModal(); });
 
 /* ---------- ルーティング ---------- */
-const ADM_VIEWS=["dash","content","students","studentDetail","exam","proctor","proctorDetail","certs","sales","analytics","notices","legal"];
-const ADM_VIEW_LABEL={dash:"ダッシュボード",content:"コンテンツ管理",students:"受講者管理",studentDetail:"受講者詳細",exam:"試験管理",proctor:"不正監視",proctorDetail:"監視レビュー",certs:"資格発行管理",sales:"決済・売上",analytics:"アクセス解析",notices:"お知らせ管理",legal:"規約・ポリシー"};
+const ADM_VIEWS=["dash","content","students","studentDetail","realStudent","exam","proctor","proctorDetail","certs","sales","analytics","notices","legal"];
+const ADM_VIEW_LABEL={dash:"ダッシュボード",content:"コンテンツ管理",students:"受講者管理",studentDetail:"受講者詳細",exam:"試験管理",proctor:"不正監視",proctorDetail:"監視レビュー",certs:"資格発行管理",sales:"決済・売上",analytics:"アクセス解析",notices:"お知らせ管理",legal:"規約・ポリシー",realStudent:"受講者詳細(実データ)"};
 function admGo(view,opt){
   admState.view=view;
   admToggleSide(false);
   ADM_VIEWS.forEach(v=>$("view-adm-"+v).classList.toggle("hide",v!==view));
   document.querySelectorAll("#adminShell .snav").forEach(b=>{
-    const map={studentDetail:"students",proctorDetail:"proctor"};
+    const map={studentDetail:"students",realStudent:"students",proctorDetail:"proctor"};
     b.classList.toggle("on", b.dataset.view===view || b.dataset.view===map[view]);
   });
   $("admTopLoc").textContent=ADM_VIEW_LABEL[view]||"";
   const r={dash:renderDash,content:renderContent,students:renderStudents,studentDetail:()=>renderStudentDetail(opt),
            exam:renderExamAdmin,proctor:renderProctor,proctorDetail:()=>renderProctorDetail(opt),
-           certs:renderCertsAdmin,sales:renderSales,analytics:renderAnalytics,notices:renderNoticesAdmin,legal:renderLegalAdmin};
+           certs:renderCertsAdmin,sales:renderSales,analytics:renderAnalytics,notices:renderNoticesAdmin,legal:renderLegalAdmin,realStudent:()=>renderRealStudent(opt)};
   r[view]();
   window.scrollTo({top:0});
 }
@@ -2896,7 +3087,7 @@ function renderContent(){
             <span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴80%</span><br>
             <span style="display:inline-flex;gap:6px;align-items:center;margin-top:3px">
               ${videoTag(l)}
-              ${l.video&&l.video.vid?`<button class="btn btn-line btn-xs" onclick="previewVideo('${l.id}')">▶ プレビュー</button>`:""}
+              ${videoFor(l.id)?`<button class="btn btn-line btn-xs" onclick="previewVideo('${l.id}')">▶ プレビュー</button>`:""}
             </span></td>
           <td>${esc(l.inst||c.inst)}</td>
           <td class="c">${admFmtMin(l.dur)}</td>
@@ -2919,7 +3110,7 @@ function renderContent(){
     <tr><th><span class="tag tag-youtube">YouTube</span></th>
       <td><b>一般公開・導入コンテンツ用</b>(無料動画・説明会など)。限定公開はURLを知っていれば誰でも視聴できるため、<u>有料レッスンには使用しないでください</u>。</td></tr>
     <tr><th>登録方法</th>
-      <td>各レッスンの「編集」から配信元を選び、動画URLを貼り付けるだけで登録できます(IDは自動抽出)。登録後は「▶ プレビュー」で再生確認できます。</td></tr>
+      <td>各レッスンの「編集」から配信元を選び、動画URLを貼り付けるだけで登録できます(IDは自動抽出)。登録後は「▶ プレビュー」で再生確認でき、<b>生徒側のレッスンページにも即時反映されます</b>(視聴位置・視聴時間・80%完了が記録されます)。</td></tr>
   </table>`;
 }
 function findLesson(id){ for(const g of ["C","B"]) for(const c of CONTENT[g]) { const l=c.lessons.find(x=>x.id===id); if(l) return {l,c}; } return null; }
@@ -2932,8 +3123,9 @@ function moveLesson(cid,idx,dir){
 }
 /* ---- 動画(YouTube / Vimeo)ユーティリティ ---- */
 function videoTag(l){
-  if(!l.video||!l.video.vid) return '<span class="tag tag-gray">動画未登録</span>';
-  return l.video.provider==="youtube"
+  const v=videoFor(l.id);
+  if(!v||!v.vid) return '<span class="tag tag-gray">動画未登録</span>';
+  return v.provider==="youtube"
     ? '<span class="tag tag-youtube">YouTube(一般公開用)</span>'
     : '<span class="tag tag-vimeo">Vimeo(会員限定)</span>';
 }
@@ -2959,8 +3151,8 @@ function embedUrl(v){
 }
 function previewVideo(lessonId){
   const f=findLesson(lessonId);
-  if(!f||!f.l.video||!f.l.video.vid){ toast("動画が登録されていません"); return; }
-  const v=f.l.video;
+  const v=videoFor(lessonId);
+  if(!f||!v||!v.vid){ toast("動画が登録されていません"); return; }
   admOpenModal(`
     <h3>動画プレビュー — ${esc(f.l.t)}</h3>
     <p class="sub">${v.provider==="youtube"?"YouTube":"Vimeo"} ／ ID: ${esc(v.vid)}</p>
@@ -2980,9 +3172,9 @@ function elProviderChanged(){
 }
 function editLesson(id){
   const f=id?findLesson(id):null;
-  const l=f?f.l:{t:"",dur:60,inst:"",pub:false,video:null};
-  const v=l.video||{provider:"none",vid:""};
-  const curUrl = l.video&&l.video.vid ? (l.video.provider==="youtube"?`https://youtu.be/${l.video.vid}`:`https://vimeo.com/${l.video.vid}`) : "";
+  const l=f?f.l:{t:"",dur:60,inst:"",pub:false};
+  const v=(id?videoFor(id):null)||{provider:"none",vid:""};
+  const curUrl = v.vid ? (v.provider==="youtube"?`https://youtu.be/${v.vid}`:`https://vimeo.com/${v.vid}`) : "";
   admOpenModal(`
     <h3>${id?"レッスンの編集":"レッスンの新規追加"}</h3>
     <p class="sub">${id?esc(l.id):"保存時にIDが採番されます"}</p>
@@ -3025,14 +3217,105 @@ function saveLesson(id){
       f.l.t=$("elT").value||f.l.t;
       f.l.dur=parseInt($("elD").value)||f.l.dur;
       f.l.inst=$("elI").value;
-      f.l.video=video;
     }
+    // 動画レジストリへ保存 → 生徒側レッスンページに即反映
+    if(video){ videoReg[id]=video; } else { delete videoReg[id]; }
+    VideoReg.save(videoReg);
   }
   admCloseModal(); renderContent();
   toast(id?(video?`レッスンを更新し、${video.provider==="youtube"?"YouTube":"Vimeo"}動画を登録しました`:"レッスンを更新しました"):"レッスンを追加しました(デモ)");
 }
 
 /* ---------- 受講者管理 ---------- */
+function realAccounts(){
+  const out=[];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && k.startsWith("aps_member_v1::")){
+        try{ const o=JSON.parse(localStorage.getItem(k)); if(o&&o.account) out.push(o); }catch(e){}
+      }
+    }
+  }catch(e){}
+  return out.sort((a,b)=>(a.account.joined<b.account.joined?1:-1));
+}
+function watchMin(raw){
+  const wl=raw.watchLog||{};
+  return Math.round(Object.values(wl).reduce((a,x)=>a+(x.sec||0),0)/60);
+}
+function realProgressPct(raw){
+  return Math.round(((raw.done||[]).length)/cLessons.length*100);
+}
+function realStudentsHtml(){
+  const ra=realAccounts();
+  if(!ra.length) return `<div class="box box-pad" style="font-size:13px;color:var(--muted)">まだ実アカウントがありません。デモ生徒(student@s-cade.com)でログインするか、入会申し込みでアカウントを作成すると、ここに実際の進捗が表示されます。</div>`;
+  return `<div class="table-scroll"><table class="data-table">
+    <thead><tr><th>氏名</th><th style="width:140px">プラン</th><th style="width:150px">C級進捗</th><th style="width:90px" class="c">視聴時間</th><th style="width:100px" class="c">試験</th><th style="width:90px" class="c">資格</th></tr></thead>
+    <tbody>
+    ${ra.map(r=>{
+      const pct=realProgressPct(r);
+      const at=(r.attempts||[]);
+      const last=at[at.length-1];
+      return `<tr class="clickable" onclick="admGo('realStudent','${esc(r.account.email)}')">
+        <td><b>${esc(r.account.name)}</b><br><span style="font-size:11px;color:var(--muted)">${esc(r.account.email)} ／ 登録日 ${esc(r.account.joined||"—")}</span></td>
+        <td style="font-size:12px">${esc((PLANS[r.account.plan]||{}).label||r.account.plan||"—")}</td>
+        <td><div class="pbar-row">${admPbar(pct,{cls:pct===100?"ok":""})}<span class="pbar-num">${pct}%</span></div></td>
+        <td class="c">${watchMin(r)}分</td>
+        <td class="c">${last?(last.pass?`<span class="tag tag-ok">合格 ${last.score}</span>`:`<span class="tag tag-bad">不合格 ${last.score}</span>`):'<span class="tag tag-gray">未受験</span>'}</td>
+        <td class="c">${r.cert?'<span class="tag tag-ok">取得</span>':'—'}</td>
+      </tr>`;}).join("")}
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">この端末(ブラウザ)に保存されているアカウントの実データです。行をクリックするとレッスン別の視聴記録を表示します。実装時はサーバーDBの全受講者が表示されます。</p>`;
+}
+function renderRealStudent(email){
+  const raw=Store.load(email);
+  if(!raw || !raw.account){ toast("アカウントが見つかりません"); admGo("students"); return; }
+  const wl=raw.watchLog||{};
+  const doneSet=new Set(raw.done||[]);
+  const bDoneSet=new Set(raw.bdone||[]);
+  const at=(raw.attempts||[]);
+  const lessonRow=(l, dset, curId, resumeSec)=>{
+    const w=wl[l.id]||{};
+    const st = dset.has(l.id) ? `<span class="tag tag-ok">完了</span>${w.done?` <span style="font-size:11px;color:var(--muted)">${esc(w.done)}</span>`:""}`
+      : (w.sec>0 || l.id===curId&&resumeSec>0) ? '<span class="tag tag-blue">視聴中</span>'
+      : '<span class="tag tag-gray">未視聴</span>';
+    const mins = w.sec ? (w.sec>=60 ? Math.round(w.sec/60)+"分" : Math.round(w.sec)+"秒") : "—";
+    const mark = l.id===curId && resumeSec>0 && !dset.has(l.id) ? `しおり ${Math.floor(resumeSec/60)}:${String(Math.floor(resumeSec%60)).padStart(2,"0")}` : "";
+    return `<tr><td style="font-size:12.5px"><b>${esc(l.t)}</b><br><span style="font-size:11px;color:var(--muted)">${l.id}${videoFor(l.id)?` ／ ${videoFor(l.id).provider==="youtube"?"YouTube":"Vimeo"}動画`:""}</span></td>
+      <td class="c" style="width:90px">${mins}</td>
+      <td style="width:150px">${st} <span style="font-size:11px;color:var(--muted)">${mark}</span></td></tr>`;
+  };
+  const pct=realProgressPct(raw);
+  $("view-adm-realStudent").innerHTML = `
+  ${admCrumb([`<a href="javascript:void(0)" onclick="admGo('students')">受講者管理</a>`, esc(raw.account.name)+"(実データ)"])}
+  <h1 class="page-title">${esc(raw.account.name)} <span style="font-size:13px;color:var(--muted);font-weight:500">実データ</span></h1>
+  <p class="page-lead">${esc(raw.account.org||"—")} ／ ${esc(raw.account.email)} ／ 登録日:${esc(raw.account.joined||"—")}</p>
+
+  <h2 class="h-bar">受講サマリー</h2>
+  <table class="dl-table">
+    <tr><th>プラン</th><td>${esc((PLANS[raw.account.plan]||{}).label||raw.account.plan||"—")}(受講権限:${raw.entitlements&&raw.entitlements.course?"あり":"なし"} ／ 受験権限:${raw.entitlements&&raw.entitlements.exam?"あり":"なし"})</td></tr>
+    <tr><th>C級進捗</th><td><div class="pbar-row" style="max-width:420px">${admPbar(pct,{cls:pct===100?"ok":""})}<span class="pbar-num">${(raw.done||[]).length}/${cLessons.length} レッスン(${pct}%)</span></div></td></tr>
+    <tr><th>総視聴時間</th><td>${watchMin(raw)}分</td></tr>
+    <tr><th>受験履歴</th><td>${at.length?at.map(a=>`${esc(a.date)}:${a.pass?'<span class="tag tag-ok">合格</span>':'<span class="tag tag-bad">不合格</span>'} ${a.score}点${a.warns?`(離脱検知${a.warns}回)`:""}`).join("<br>"):"未受験"}</td></tr>
+    <tr><th>資格</th><td>${raw.cert?`<span class="tag tag-ok">取得済</span> ${esc(raw.cert.id)}(有効期限 ${esc(raw.cert.expiry)})`:"—"}</td></tr>
+    <tr><th>支払い</th><td>${(raw.payments||[]).length?(raw.payments||[]).map(pm=>`${esc(pm.date)} ${esc(pm.item)} ¥${Number(pm.amount).toLocaleString("ja-JP")}`).join("<br>"):"—"}</td></tr>
+  </table>
+
+  <h2 class="h-bar">レッスン別の視聴記録(C級)</h2>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th>レッスン</th><th class="c">視聴時間</th><th>状態</th></tr></thead>
+    <tbody>${cLessons.map(l=>lessonRow(l, doneSet, raw.current, raw.resumeSec||0)).join("")}</tbody>
+  </table></div>
+
+  ${(raw.bdone||[]).length||raw.cert?`
+  <h2 class="h-bar">レッスン別の視聴記録(B級)</h2>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th>レッスン</th><th class="c">視聴時間</th><th>状態</th></tr></thead>
+    <tbody>${bLessons.map(l=>lessonRow(l, bDoneSet, raw.bcurrent, raw.bresumeSec||0)).join("")}</tbody>
+  </table></div>`:""}`;
+}
+
 let stuQuery="", stuFilter="all";
 function renderStudents(){
   const q=stuQuery.toLowerCase();
@@ -3049,7 +3332,11 @@ function renderStudents(){
   <h1 class="page-title">受講者管理</h1>
   <p class="page-lead">受講者の検索・進捗確認・メッセージ配信・アカウント管理を行います。</p>
 
-  <div class="table-tools mt-m">
+  <h2 class="h-bar">実際の受講者<small>この端末に保存されている実データ</small></h2>
+  ${realStudentsHtml()}
+
+  <h2 class="h-bar">サンプルデータ<small>画面確認用のダミー受講者</small></h2>
+  <div class="table-tools">
     <input type="search" placeholder="氏名・フリガナ・メール・所属で検索" value="${esc(stuQuery)}" oninput="stuQuery=this.value;renderStudents()">
     <select onchange="stuFilter=this.value;renderStudents()">
       <option value="all" ${stuFilter==="all"?"selected":""}>すべて</option>
@@ -3647,10 +3934,21 @@ async function doLogin(){
     toast("管理者ログイン:認証コードを送信しました(デモ:任意の6桁で進めます)");
     return;
   }
-  if(!state.account){ toast("アカウントが見つかりません。入会申し込み(会員登録)からご登録ください"); return; }
-  if(email!==state.account.email.toLowerCase()){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  // デモ生徒アカウント
+  if(email===DEMO_STUDENT.email){
+    const h=await sha256(pass);
+    if(h!==DEMO_STUDENT.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+    const raw=Store.load(email);
+    if(raw && raw.account){ hydrateState(raw); } else { seedDemoStudent(); }
+    enterMember();
+    toast("デモ生徒アカウントでログインしました(進捗はこのブラウザに保存されます)");
+    return;
+  }
+  const raw=Store.load(email);
+  if(!raw || !raw.account){ toast("アカウントが見つかりません。入会申し込み(会員登録)からご登録ください"); return; }
   const h=await sha256(pass);
-  if(h!==state.account.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  if(h!==raw.account.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  hydrateState(raw);
   enterMember();
   toast("ログインしました");
 }
