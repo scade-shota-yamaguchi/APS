@@ -5,6 +5,10 @@
   (ログインページ右上に表示されます)
 
   更新履歴:
+  - v1.6.0 2026.07.29 視聴ゲージ+完了100%化+ログイン維持
+      完了条件を「視聴時間100%」の素直な仕様に変更。レッスンページに視聴割合
+      ゲージを追加(再生中に5%刻みでリアルタイム更新)、一覧にも視聴%を表示。
+      リロードでログイン画面に戻る問題を修正(セッション保持、ログアウトで解除)
   - v1.5.1 2026.07.29 完了に必要な視聴率を80%→90%に変更(COMPLETE_RATE定数)
   - v1.5.0 2026.07.29 早送り対策:完了条件を実視聴時間ベースに
       収録時間の80%以上を実際に再生した場合のみ完了(シーク・早送り分は不算入)。
@@ -933,7 +937,7 @@ a:hover{text-decoration:underline}
 </div>
 <script>
 /* ==== バージョン(更新時はここを書き換える) ==== */
-const APP_VERSION="v1.5.1";
+const APP_VERSION="v1.6.0";
 const APP_UPDATED="2026.07.29";
 
 /* ==========================================================
@@ -1316,7 +1320,14 @@ const PLANS = {
   course: { label:"C級 受講のみ",        amount:35000, course:true,  exam:false },
   exam:   { label:"C級 受験のみ",        amount:20000, course:false, exam:true  },
 };
+const Session={
+  KEY:"aps_session_v1",
+  set(o){ try{ localStorage.setItem(this.KEY, JSON.stringify(o)); }catch(e){} },
+  get(){ try{ return JSON.parse(localStorage.getItem(this.KEY)); }catch(e){ return null; } },
+  clear(){ try{ localStorage.removeItem(this.KEY); }catch(e){} },
+};
 function enterMember(){
+  Session.set({ type:"member", email:state.account.email });
   state.loggedIn=true;
   $("authArea").classList.add("hide");
   $("memberShell").classList.add("active");
@@ -1366,6 +1377,7 @@ async function doRegister(){
   toast("登録が完了しました。"+plan.label+" のお支払いを受け付けました");
 }
 function doLogout(){
+  Session.clear();
   stopExamTimer(); stopCam(); stopPlayer(true);
   persist();
   state.loggedIn=false; state.examStage="intro";
@@ -1378,6 +1390,7 @@ function doLogout(){
 }
 function deleteAccount(){
   closeModal("modalQuit");
+  Session.clear();
   if(state.account && state.account.email) Store.remove(state.account.email);
   state=defaultState();
   stopExamTimer(); stopCam(); stopPlayer();
@@ -1566,7 +1579,7 @@ function renderGradeC(){
         return `<tr>
           <td class="num">${ci+1}-${li+1}</td>
           <td><b>${esc(l.t)}</b><br><span style="font-size:12px;color:var(--muted)">担当:${esc(instOf(l,c))} ／ 教材PDF付き</span></td>
-          <td class="st">${done?'<span class="tag tag-ok">完了</span>':cur?'<span class="tag tag-blue">受講中</span>':'<span class="tag tag-gray">未受講</span>'}</td>
+          <td class="st">${done?'<span class="tag tag-ok">完了</span>':(watchPct(l.id,l.dur)>0?`<span class="tag tag-blue">${watchPct(l.id,l.dur)}%視聴</span>`:cur?'<span class="tag tag-blue">受講中</span>':'<span class="tag tag-gray">未受講</span>')}</td>
           <td class="dur">${fmtMin(l.dur)}</td>
           <td class="act"><button class="btn ${done?"btn-line":"btn-blue"} btn-sm" onclick="go('lesson','${l.id}')">${done?"もう一度見る":cur?"▶ 続きから":"▶ 視聴する"}</button></td>
         </tr>`;
@@ -1655,7 +1668,7 @@ function renderGradeB(){
         return `<tr>
           <td class="num">${ci+1}-${li+1}</td>
           <td><b>${esc(l.t)}</b><br><span style="font-size:12px;color:var(--muted)">担当:${esc(instOf(l,c))} ／ 教材PDF付き</span></td>
-          <td class="st">${done?'<span class="tag tag-ok">完了</span>':cur?'<span class="tag tag-blue">受講中</span>':'<span class="tag tag-gray">未受講</span>'}</td>
+          <td class="st">${done?'<span class="tag tag-ok">完了</span>':(watchPct(l.id,l.dur)>0?`<span class="tag tag-blue">${watchPct(l.id,l.dur)}%視聴</span>`:cur?'<span class="tag tag-blue">受講中</span>':'<span class="tag tag-gray">未受講</span>')}</td>
           <td class="dur">${fmtMin(l.dur)}</td>
           <td class="act"><button class="btn ${done?"btn-line":"btn-blue"} btn-sm" onclick="go('lesson','${l.id}')">${done?"もう一度見る":cur?"▶ 続きから":"▶ 視聴する"}</button></td>
         </tr>`;
@@ -1894,12 +1907,12 @@ function renderLesson(id){
       </table>
     </div>
     <div>
-      <h2 class="h-sub">このレッスンの完了状況</h2>
+      <h2 class="h-sub">視聴の進捗</h2>
       <div class="pbar-row">
-        ${pbar(done?100:Math.round(player.pos/l.dur*100),{ok:done})}
-        <span class="pbar-num" id="lsPct">${done?100:Math.round(player.pos/l.dur*100)}%</span>
+        <div class="pbar"><div class="pbar-fill ${done||watchPct(l.id,l.dur)>=100?"ok":""}" id="watchGaugeFill" style="width:${watchPct(l.id,l.dur)}%"></div></div>
+        <span class="pbar-num" id="watchGaugeNum">${watchPct(l.id,l.dur)}%</span>
       </div>
-      <p style="font-size:12.5px;color:var(--muted);margin-top:8px">視聴が${COMPLETE_PCT}%に達すると完了として記録されます。</p>
+      <p style="font-size:12.5px;color:var(--muted);margin-top:8px">実際に再生した時間の割合です(5%刻みでリアルタイム更新)。${sitePolicy.strictComplete?"100%に達すると完了として記録されます。早送り・スキップ分は含まれません。":"再生位置が90%に達すると完了として記録されます。"}</p>
       <div class="mt-s">
         ${done?'<span class="tag tag-ok">完了を記録済み</span>'
           :`<button class="btn btn-line btn-sm" onclick="markDone('${l.id}')">完了にする(デモ操作)</button>`}
@@ -2616,8 +2629,24 @@ const Policy={
   save(p){ try{ localStorage.setItem(this.KEY, JSON.stringify(p)); }catch(e){} },
 };
 let sitePolicy=Policy.load();
-const COMPLETE_RATE=0.9;   // レッスン完了に必要な視聴率(90%)
+const COMPLETE_RATE=1.0;   // レッスン完了に必要な視聴率(100%=全部見る)
 const COMPLETE_PCT=Math.round(COMPLETE_RATE*100);
+/* 視聴割合(5%刻み・完了済みは常に100) */
+function watchPct(lessonId, dur){
+  const set = doneSetFor((lessonId||"").startsWith("b")?"B":"C");
+  if(set.has(lessonId)) return 100;
+  if(!dur) return 0;
+  const raw=Math.min(100, watchedSec(lessonId)/dur*100);
+  return Math.min(100, Math.floor(raw/5)*5);
+}
+function updateWatchGauge(lessonId, dur){
+  const f=$("watchGaugeFill"), n=$("watchGaugeNum");
+  if(!f||!n) return;
+  const pct=watchPct(lessonId, dur);
+  f.style.width=pct+"%";
+  if(pct>=100) f.classList.add("ok");
+  n.textContent=pct+"%";
+}
 
 const VideoReg={
   KEY:"aps_videos_v1",
@@ -2651,8 +2680,8 @@ function checkComplete(lesson, pos, dur){
   const set=doneSetFor(lesson.grade||"C");
   if(set.has(lesson.id)) return;
   const ok = sitePolicy.strictComplete
-    ? watchedSec(lesson.id) >= dur*COMPLETE_RATE   // 早送り・スキップ分は含まれない
-    : pos/dur >= COMPLETE_RATE;
+    ? watchedSec(lesson.id) >= dur*COMPLETE_RATE - 1   // 早送り・スキップ分は含まれない(端数1秒は許容)
+    : pos/dur >= 0.9;   // 位置モード(テスト用)は90%位置で完了
   if(ok) markDone(lesson.id, true);
 }
 function addWatch(lessonId, sec){
@@ -2660,6 +2689,9 @@ function addWatch(lessonId, sec){
   const wl=state.watchLog[lessonId]||(state.watchLog[lessonId]={sec:0});
   wl.sec=Math.round((wl.sec+sec)*10)/10;
   wl.last=today();
+  const dur = (realPlayer.lesson&&realPlayer.lesson.id===lessonId&&realPlayer.dur) ? realPlayer.dur
+            : (player.lesson&&player.lesson.id===lessonId) ? player.dur : 0;
+  if(dur) updateWatchGauge(lessonId, dur);
   persistSoon();
 }
 
@@ -2708,7 +2740,7 @@ function onRealTime(pos, dur){
       st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了済み`;
     }else if(sitePolicy.strictComplete){
       const need=Math.max(0, Math.ceil(dur*COMPLETE_RATE - watchedSec(l.id)));
-      st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了まであと ${fmtTime(need)} の視聴が必要`;
+      st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 視聴済み ${watchPct(l.id,dur)}%(あと ${fmtTime(need)})`;
     }else{
       st.textContent=`視聴位置 ${fmtTime(Math.floor(pos))} / ${fmtTime(Math.floor(dur))} ・ 完了ライン ${fmtTime(Math.floor(dur*COMPLETE_RATE))}`;
     }
@@ -4029,6 +4061,7 @@ function adminOtpConfirm(){
   enterAdmin(pendingAdmin);
 }
 function enterAdmin(adm){
+  Session.set({ type:"admin", email:adm.email });
   $("authArea").classList.add("hide");
   $("adminShell").classList.add("active");
   const nm=$("admUserName"); if(nm) nm.textContent=adm.name+" さん";
@@ -4037,6 +4070,7 @@ function enterAdmin(adm){
   toast("管理画面にログインしました");
 }
 function admLogout(){
+  Session.clear();
   admToggleSide(false);
   pendingAdmin=null;
   $("adminShell").classList.remove("active");
@@ -4044,6 +4078,24 @@ function admLogout(){
   showAuth("login");
   toast("ログアウトしました");
 }
+
+/* ---------- セッション復元(リロードしてもログイン状態を維持) ----------
+   実装時はサーバー発行のセッショントークン(HttpOnly Cookie)に置き換える */
+(function restoreSession(){
+  const ss=Session.get();
+  if(!ss) return;
+  try{
+    if(ss.type==="admin"){
+      const adm=ADMIN_ACCOUNTS.find(a=>a.email===ss.email);
+      if(adm){ enterAdmin(adm); }
+      else Session.clear();
+    }else if(ss.type==="member"){
+      const raw=Store.load(ss.email);
+      if(raw && raw.account){ hydrateState(raw); enterMember(); }
+      else Session.clear();
+    }
+  }catch(e){ Session.clear(); }
+})();
 
 </script>
 </body>
