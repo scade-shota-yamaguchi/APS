@@ -376,6 +376,92 @@ a:hover{text-decoration:underline}
 .footer-inner{max-width:1100px;margin:0 auto;padding:28px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px}
 .footer-inner .fl{display:flex;gap:20px;flex-wrap:wrap}
 .footer-inner a{color:#c5c5cb}
+
+/* ==========================================================
+   管理画面(アドミン)追加スタイル — ユーザーサイトと共存
+   ========================================================== */
+.btn-xs{padding:5px 10px;font-size:11.5px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media (max-width:1100px){.grid4{grid-template-columns:1fr 1fr}}
+@media (max-width:960px){.grid4{grid-template-columns:1fr}}
+/* ---------- KPIカード ---------- */
+.kpi{border:1px solid var(--line);background:#fff;padding:18px 20px}
+.kpi .lbl{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.kpi .val{font-size:28px;font-weight:900;letter-spacing:.02em;line-height:1.3;margin:2px 0}
+.kpi .val small{font-size:13px;color:var(--faint);font-weight:700}
+.kpi .sub{font-size:11.5px;color:var(--muted)}
+.kpi .up{color:var(--ok);font-weight:700}
+.kpi .down{color:var(--bad);font-weight:700}
+
+
+/* ---------- データテーブル ---------- */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:var(--navy);color:#fff;font-weight:700;padding:9px 12px;text-align:left;font-size:12px;letter-spacing:.05em;white-space:nowrap}
+.data-table td{border:1px solid var(--line);padding:9px 12px;vertical-align:middle}
+.data-table tr:nth-child(even) td{background:#fafbfc}
+.data-table tr.clickable{cursor:pointer}
+.data-table tr.clickable:hover td{background:var(--blue-pale)}
+.data-table .r{text-align:right;white-space:nowrap}
+.data-table .c{text-align:center;white-space:nowrap}
+.table-scroll{overflow-x:auto}
+.table-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.table-tools input[type=search],.table-tools select{border:1px solid #cfcfd6;background:#fff;padding:9px 13px;border-radius:3px;font-size:13px}
+.table-tools input[type=search]{min-width:220px}
+.table-tools .spacer{flex:1}
+
+
+/* ---------- 横棒グラフ ---------- */
+.bar-list{display:grid;gap:9px}
+.bar-item{display:grid;grid-template-columns:180px 1fr 64px;gap:12px;align-items:center;font-size:12.5px}
+.bar-item .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#444}
+.bar-item .num{text-align:right;font-weight:700;color:var(--blue-dark);white-space:nowrap}
+.vbar-wrap{display:flex;align-items:flex-end;gap:10px;height:150px;padding:6px 2px 0}
+.vbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.vbar .col{width:70%;max-width:44px;background:var(--blue);border-radius:2px 2px 0 0}
+.vbar .lb{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.vbar .vl{font-size:10.5px;font-weight:700;color:var(--blue-dark)}
+@media (max-width:960px){.bar-item{grid-template-columns:110px 1fr 56px}}
+
+
+/* ---------- スナップショット ---------- */
+.snap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.snap{aspect-ratio:4/3;background:#1a1f26;border:1px solid #333;position:relative;display:flex;align-items:center;justify-content:center;color:#8fa6c8}
+.snap svg{opacity:.8}
+.snap .ts{position:absolute;left:6px;bottom:4px;font-size:9.5px;color:#9db8ea;letter-spacing:.04em}
+.snap.flagged{border:2px solid var(--bad)}
+.snap.flagged::after{content:"⚠";position:absolute;top:4px;right:6px;color:var(--bad);font-size:13px}
+.log-line{display:flex;gap:12px;padding:8px 4px;border-bottom:1px dashed var(--line);font-size:12.5px}
+.log-line:last-child{border-bottom:none}
+.log-line .t{color:var(--faint);white-space:nowrap;width:66px}
+.log-line.warn .e{color:var(--warn);font-weight:700}
+
+
+.m-field{margin-bottom:14px}
+.m-field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.m-field input,.m-field select,.m-field textarea{width:100%;border:1px solid #cfcfd6;background:#fff;padding:10px 13px;border-radius:3px}
+.m-field textarea{min-height:90px;resize:vertical}
+.m-field input:focus,.m-field select:focus,.m-field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-pale)}
+#adminShell{display:none}
+#adminShell.active{display:grid;grid-template-columns:246px 1fr;min-height:100vh}
+#adminShell .main-wrap{min-width:0;background:#fff}
+#adminShell .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:9px 26px;background:#fff;position:sticky;top:0;z-index:25}
+#adminShell .topbar .loc{font-size:12px;color:var(--muted)}
+#adminShell .topbar .env{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--bad);border:1px solid var(--bad);padding:1px 9px}
+#adminShell .page{max-width:1120px;margin:0 auto;padding:0 26px 90px}
+#adminShell .mini-alert{background:#d24a4a;color:#fff;border-radius:10px;padding:0 7px}
+#admModalBg .modal{max-width:560px;padding:28px}
+#admModalBg .modal.wide{max-width:820px}
+#admModalBg .modal .sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+#admModalBg{align-items:flex-start;overflow:auto;padding:30px 18px}
+.otp-row{display:flex;gap:8px;justify-content:center;margin:14px 0 8px}
+.otp-row input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1px solid #cfcfd6;border-radius:4px}
+.otp-row input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-pale)}
+@media (max-width:960px){
+  #adminShell.active{display:block}
+  #adminShell .topbar{padding:8px 14px}
+  #adminShell .page{padding:0 14px 80px}
+}
+
 </style>
 </head>
 <body>
@@ -396,11 +482,11 @@ a:hover{text-decoration:underline}
     <h1 class="login-title">ログイン</h1>
     <div class="form-row">
       <label for="loginEmail">ID(メールアドレス)</label>
-      <div class="fi"><input id="loginEmail" type="email" value="demo@s-cade.jp" autocomplete="username"></div>
+      <div class="fi"><input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="username"></div>
     </div>
     <div class="form-row">
       <label for="loginPass">パスワード</label>
-      <div class="fi"><input id="loginPass" type="password" value="password" autocomplete="current-password"></div>
+      <div class="fi"><input id="loginPass" type="password" autocomplete="current-password"></div>
     </div>
     <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="doLogin()">ログイン</button></div>
     <div class="form-links"><a href="javascript:void(0)" onclick="showAuth('reset')">パスワードの設定(パスワードを忘れた方)</a></div>
@@ -455,16 +541,24 @@ a:hover{text-decoration:underline}
   <div id="viewRegister" class="login-wrap hide">
     <h1 class="login-title">入会申し込み(会員登録)</h1>
     <p style="font-size:14px;color:var(--muted);margin-bottom:30px">ご登録のメールアドレスに確認メールをお送りします。メール内のリンクから本登録が完了します。</p>
-    <div class="form-row"><label>氏名 <span style="color:var(--bad)">※</span></label><div class="fi"><input type="text" placeholder="例)測定 太郎"></div></div>
-    <div class="form-row"><label>フリガナ</label><div class="fi"><input type="text" placeholder="例)ソクテイ タロウ"></div></div>
-    <div class="form-row"><label>所属(任意)</label><div class="fi"><input type="text" placeholder="例)◯◯大学 / ◯◯クラブ"></div></div>
-    <div class="form-row"><label>メールアドレス <span style="color:var(--bad)">※</span></label><div class="fi"><input type="email" placeholder="you@example.com"></div></div>
-    <div class="form-row"><label>パスワード <span style="color:var(--bad)">※</span></label><div class="fi"><input type="password" placeholder="8文字以上・英数字を含む"><div class="hint">8文字以上、英字と数字を含めてください。</div></div></div>
+    <div class="form-row"><label>氏名 <span style="color:var(--bad)">※</span></label><div class="fi"><input id="regName" type="text" placeholder="例)測定 太郎"></div></div>
+    <div class="form-row"><label>フリガナ</label><div class="fi"><input id="regKana" type="text" placeholder="例)ソクテイ タロウ"></div></div>
+    <div class="form-row"><label>所属(任意)</label><div class="fi"><input id="regOrg" type="text" placeholder="例)◯◯大学 / ◯◯クラブ"></div></div>
+    <div class="form-row"><label>メールアドレス <span style="color:var(--bad)">※</span></label><div class="fi"><input id="regEmail" type="email" placeholder="you@example.com"></div></div>
+    <div class="form-row"><label>パスワード <span style="color:var(--bad)">※</span></label><div class="fi"><input id="regPass" type="password" placeholder="8文字以上・英数字を含む"><div class="hint">8文字以上、英字と数字を含めてください。</div></div></div>
+    <div class="form-row"><label>お申し込みプラン <span style="color:var(--bad)">※</span></label><div class="fi">
+      <select id="regPlan">
+        <option value="full">C級 受講+受験セット — 49,800円(税込)</option>
+        <option value="course">C級 受講のみ — 35,000円(税込)</option>
+        <option value="exam">C級 受験のみ — 20,000円(税込)</option>
+      </select>
+      <div class="hint">お支払いはクレジットカード(Stripe)です。登録後にご請求が確定します。</div>
+    </div></div>
     <div class="consent-line">
       <input type="checkbox" id="agreeTos">
       <label for="agreeTos" style="cursor:pointer"><a href="javascript:void(0)">利用規約</a>および<a href="javascript:void(0)">プライバシーポリシー</a>(受験時の顔記録・操作ログの取得を含む)に同意します。</label>
     </div>
-    <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="doRegister()">確認メールを送信する</button></div>
+    <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="doRegister()">登録して決済に進む</button></div>
     <div class="form-links"><a href="javascript:void(0)" onclick="showAuth('login')">ログイン画面へ戻る</a></div>
   </div>
 
@@ -475,6 +569,22 @@ a:hover{text-decoration:underline}
     <div class="form-row"><label>メールアドレス</label><div class="fi"><input type="email" placeholder="you@example.com"></div></div>
     <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="toast('再設定メールを送信しました(デモ)');showAuth('login')">送信する</button></div>
     <div class="form-links"><a href="javascript:void(0)" onclick="showAuth('login')">ログイン画面へ戻る</a></div>
+  </div>
+
+  
+  <!-- 管理者:二要素認証 -->
+  <div id="viewAdminOtp" class="login-wrap hide">
+    <h1 class="login-title">認証コードの入力</h1>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:22px">管理者アカウントでのログインには二要素認証が必要です。登録済みの認証アプリ/メールに送信された6桁のコードを入力してください。</p>
+    <div class="otp-row">
+      <input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric">
+    </div>
+    <div class="form-actions"><button class="btn btn-navy btn-lg" onclick="adminOtpConfirm()">ログイン</button></div>
+    <div class="form-links">
+      <a href="javascript:void(0)" onclick="toast('認証コードを再送しました(デモ)')">コードを再送する</a>
+      <a href="javascript:void(0)" onclick="pendingAdmin=null;showAuth('login')">ログイン画面へ戻る</a>
+    </div>
+    <p style="font-size:11.5px;color:var(--faint);margin-top:18px">デモ環境:任意の数字(未入力でも可)でログインできます。本番では管理画面へのIP制限も適用します(要件定義書 7.1)。</p>
   </div>
 
   <footer class="site-footer">
@@ -508,8 +618,8 @@ a:hover{text-decoration:underline}
     </div>
     <div class="side-group">
       <div class="side-label">講座・動画</div>
-      <button class="snav sub" data-view="gradeC" onclick="go('gradeC')">C級講座(動画)<span class="mini mini-done">完了</span></button>
-      <button class="snav sub" data-view="gradeB" onclick="go('gradeB')">B級講座(動画)<span class="mini mini-on">受講中</span></button>
+      <button class="snav sub" data-view="gradeC" onclick="go('gradeC')">C級講座(動画)<span class="mini" id="navBadgeC" style="display:none"></span></button>
+      <button class="snav sub" data-view="gradeB" onclick="go('gradeB')">B級講座(動画)<span class="mini" id="navBadgeB" style="display:none"></span></button>
       <button class="snav sub" data-view="gradeA" onclick="go('gradeA')">A級講座<span class="mini mini-prep">準備中</span></button>
     </div>
     <div class="side-group">
@@ -528,7 +638,7 @@ a:hover{text-decoration:underline}
       <button class="snav sub" data-view="profile" onclick="go('profile')">会員情報</button>
     </div>
     <div class="side-user">
-      <div class="nm" id="hdrUserName">佐藤 拓真 さん</div>
+      <div class="nm" id="hdrUserName"></div>
       <div class="rl">C級 受講中</div>
       <button class="btn btn-line btn-sm" style="border-color:#3a3a40;background:transparent;color:#c9c9cf" onclick="doLogout()">ログアウト</button>
     </div>
@@ -538,7 +648,7 @@ a:hover{text-decoration:underline}
     <div class="member-topbar">
       <button class="menu-toggle" onclick="toggleSide(true)">☰ メニュー</button>
       <span class="loc" id="topLoc">マイページ</span>
-      <span class="who">佐藤 拓真 さん</span>
+      <span class="who" id="topWho"></span>
     </div>
     <main class="page">
       <div id="view-home"></div>
@@ -568,13 +678,83 @@ a:hover{text-decoration:underline}
 </div>
 
 <!-- 退会モーダル -->
+
+<!-- ============ 管理画面(アドミン) ============ -->
+<div class="side-overlay" id="admSideOverlay" onclick="admToggleSide(false)"></div>
+<div id="adminShell" class="shell">
+  <aside class="side" id="admSideMenu">
+    <button class="side-close" onclick="admToggleSide(false)">✕ メニューを閉じる</button>
+    <div class="side-brand">
+      <span class="logo-plate"><img src="data:image/png;base64,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" alt="APS" style="height:38px"></span>
+      <div class="l2">ADMIN CONSOLE</div>
+    </div>
+    <div class="side-group">
+      <button class="snav" data-view="dash" onclick="admGo('dash')">ダッシュボード</button>
+    </div>
+    <div class="side-group">
+      <div class="side-label">講座・受講者</div>
+      <button class="snav" data-view="content" onclick="admGo('content')">コンテンツ管理</button>
+      <button class="snav" data-view="students" onclick="admGo('students')">受講者管理</button>
+    </div>
+    <div class="side-group">
+      <div class="side-label">試験・資格</div>
+      <button class="snav" data-view="exam" onclick="admGo('exam')">試験管理</button>
+      <button class="snav" data-view="proctor" onclick="admGo('proctor')">不正監視<span class="mini mini-alert" id="proctorBadge">2</span></button>
+      <button class="snav" data-view="certs" onclick="admGo('certs')">資格発行管理</button>
+    </div>
+    <div class="side-group">
+      <div class="side-label">運営</div>
+      <button class="snav" data-view="sales" onclick="admGo('sales')">決済・売上</button>
+      <button class="snav" data-view="analytics" onclick="admGo('analytics')">アクセス解析</button>
+      <button class="snav" data-view="notices" onclick="admGo('notices')">お知らせ管理</button>
+    </div>
+    <div class="side-user">
+      <div class="nm" id="admUserName">管理者</div>
+      <div class="rl">管理者(オーナー)</div>
+      <button class="btn btn-line btn-sm" style="border-color:#3a3a40;background:transparent;color:#c9c9cf;width:100%" onclick="admLogout()">ログアウト</button>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <div class="topbar">
+      <button class="menu-toggle" onclick="admToggleSide(true)">☰ メニュー</button>
+      <span class="loc" id="admTopLoc">ダッシュボード</span>
+      <span class="env">ADMIN</span>
+    </div>
+    <main class="page">
+      <div id="view-adm-dash"></div>
+      <div id="view-adm-content" class="hide"></div>
+      <div id="view-adm-students" class="hide"></div>
+      <div id="view-adm-studentDetail" class="hide"></div>
+      <div id="view-adm-exam" class="hide"></div>
+      <div id="view-adm-proctor" class="hide"></div>
+      <div id="view-adm-proctorDetail" class="hide"></div>
+      <div id="view-adm-certs" class="hide"></div>
+      <div id="view-adm-sales" class="hide"></div>
+      <div id="view-adm-analytics" class="hide"></div>
+      <div id="view-adm-notices" class="hide"></div>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>APS ADMIN CONSOLE — 運営スタッフ専用</div>
+        <div>© S-CADE. Inc.</div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+
+<div class="modal-bg" id="admModalBg">
+  <div class="modal" id="admModalBox"></div>
+</div>
+
 <div class="modal-bg" id="modalQuit">
   <div class="modal">
     <h3>退会(アカウント削除)の申請</h3>
     <p>退会すると受講中コースの進捗が失われます。取得済みの資格記録および受験時の監視データは、規約に定める保持期間に基づき取り扱われます。よろしいですか?</p>
     <div class="acts">
       <button class="btn btn-line btn-md" onclick="closeModal('modalQuit')">キャンセル</button>
-      <button class="btn btn-danger btn-md" onclick="closeModal('modalQuit');toast('退会申請を受け付けました(デモ)')">退会を申請する</button>
+      <button class="btn btn-danger btn-md" onclick="deleteAccount()">退会する(アカウント削除)</button>
     </div>
   </div>
 </div>
@@ -797,11 +977,6 @@ const DATA = {
       speaker:"ハイパフォーマンスディレクター", org:"国内競技団体", level:"A級向け", fee:8000, status:"準備中",
       desc:"複数の専門家が関わる現場で、測定データをどう統合し意思決定につなげるかを議論します。" },
   ],
-  payments: [
-    { id:"INV-2026-0631", date:"2026.06.15", kind:"受講料", item:"C級 受講+受験セット", method:"クレジットカード", brand:"Visa", last4:"4242", amount:49800, taxRate:0.10, status:"paid" },
-    { id:"INV-2026-0588", date:"2026.04.01", kind:"年会費", item:"APS 年会費(2026年度)", method:"クレジットカード", brand:"Visa", last4:"4242", amount:8000, taxRate:0.10, status:"paid" },
-    { id:"INV-2026-0902", date:"2026.07.05", kind:"セミナー", item:"実践セミナー『フォースプレート活用』受講料", method:"銀行振込", amount:6000, taxRate:0.10, status:"unpaid" },
-  ],
   notices: [
     { id:"n1", date:"2026.07.08", t:"C級認定試験:7月度の受験受付を開始しました", body:"全レッスン完了後、「認定試験」メニューからいつでも受験できます。受験にはカメラ付きデバイスと安定した通信環境が必要です。", read:false },
     { id:"n2", date:"2026.07.01", t:"新レッスン「WBGTと暑熱環境下のリスク管理」を公開しました", body:"生理学的測定の章に、夏季の測定運用に関するレッスンを追加しました。夏場の測定会を予定している方はぜひご覧ください。", read:false },
@@ -810,20 +985,63 @@ const DATA = {
 };
 
 function allLessonIds(){ return [].concat(...[["m0-1"],["m1-1","m1-2"],["m2-1","m2-2"],["m3-1","m3-2","m3-3"],["m4-1","m4-2","m4-3","m4-4","m4-5","m4-6","m4-7","m4-8","m4-9","m4-10"]]); }
-const state = {
-  user: { name:"佐藤 拓真", kana:"サトウ タクマ", org:"松本ユナイテッドSC", email:"demo@s-cade.jp" },
-  done: new Set(allLessonIds()),  // C級合格済みデモ:全レッスン完了
-  current: "m4-7",
-  bdone: new Set(["b0-1","b1-1","b1-2","b2-1"]),  // B級デモ:一部受講済み
-  bcurrent: "b1-3",
-  bresumeSec: 640,
-  resumeSec: 252,
-  cert: { id:"APS-C-0001", date:"2026.07.11", expiry:"2029.07.11" },  // C級合格済みデモ
-  examStage: "intro",
-  lastResult: null,
-  view: "home",
-  loggedIn: false,
+/* ==========================================================
+   状態管理と永続化
+   - 静的ホスティング(GitHub Pages)向けに localStorage へ保存
+   - バックエンド導入時は Store.load / Store.save をAPI呼び出しに
+     差し替えるだけで移行できる構造にしている
+   ========================================================== */
+const Store = {
+  KEY: "aps_member_v1",
+  available: (()=>{ try{ localStorage.setItem("__aps_t","1"); localStorage.removeItem("__aps_t"); return true; }catch(e){ return false; } })(),
+  mem: null,   // localStorage が使えない環境用のフォールバック(タブを閉じると消える)
+  load(){ if(!this.available) return this.mem; try{ return JSON.parse(localStorage.getItem(this.KEY)); }catch(e){ return null; } },
+  save(o){ if(!this.available){ this.mem=o; return; } try{ localStorage.setItem(this.KEY, JSON.stringify(o)); }catch(e){} },
+  clear(){ if(this.available) localStorage.removeItem(this.KEY); this.mem=null; },
 };
+
+function defaultState(){
+  return {
+    account: null,                       // { name, kana, org, email, passHash, plan, joined }
+    user: null,                          // 表示用プロフィール(account から複製)
+    done: new Set(), current: "m0-1", resumeSec: 0,
+    bdone: new Set(), bcurrent: "b0-1", bresumeSec: 0,
+    cert: null,
+    attempts: [],                        // 受験履歴 [{date,score,pass,warns,timeout}]
+    payments: [],                        // 支払い履歴
+    entitlements: { course:false, exam:false },  // 受講権限・受験権限
+    readNotices: [],
+    examStage: "intro", lastResult: null, view: "home", loggedIn: false,
+  };
+}
+let state = defaultState();
+(function restoreState(){
+  const raw = Store.load();
+  if(!raw || !raw.account) return;
+  state = { ...defaultState(), ...raw };
+  state.done = new Set(raw.done||[]);
+  state.bdone = new Set(raw.bdone||[]);
+  state.loggedIn=false; state.view="home"; state.examStage="intro"; state.lastResult=null;
+})();
+function persist(){
+  Store.save({
+    ...state,
+    done:[...state.done], bdone:[...state.bdone],
+    loggedIn:undefined, view:undefined, examStage:undefined, lastResult:undefined,
+  });
+}
+async function sha256(text){
+  try{
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  }catch(e){ return "plain:"+text; }  // 非HTTPS環境フォールバック
+}
+const today = () => new Date().toISOString().slice(0,10).replace(/-/g,".");
+function addYears(dateStr, n){
+  const [y,m,d]=dateStr.split(".").map(Number);
+  return `${y+n}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")}`;
+}
+function newPaymentId(){ return "INV-"+Date.now().toString(36).toUpperCase(); }
 
 const cLessons = DATA.categories.flatMap(c=>c.lessons.map(l=>({...l,cat:c,grade:"C"})));
 const bLessons = DATA.bcategories.flatMap(c=>c.lessons.map(l=>({...l,cat:c,grade:"B"})));
@@ -872,30 +1090,98 @@ function pbar(pct, opts={}){
 
 /* ---------- 認証 ---------- */
 function showAuth(which){
-  ["Login","Register","Reset"].forEach(v=>$("view"+v).classList.add("hide"));
+  ["Login","Register","Reset","AdminOtp"].forEach(v=>$("view"+v).classList.add("hide"));
   $("view"+which.charAt(0).toUpperCase()+which.slice(1)).classList.remove("hide");
   window.scrollTo({top:0});
 }
-function doLogin(){
+const PLANS = {
+  full:   { label:"C級 受講+受験セット", amount:49800, course:true,  exam:true  },
+  course: { label:"C級 受講のみ",        amount:35000, course:true,  exam:false },
+  exam:   { label:"C級 受験のみ",        amount:20000, course:false, exam:true  },
+};
+function enterMember(){
   state.loggedIn=true;
   $("authArea").classList.add("hide");
   $("memberShell").classList.add("active");
+  $("hdrUserName").textContent=state.user.name+" さん";
+  const w=$("topWho"); if(w) w.textContent=state.user.name+" さん";
+  updateNavBadges();
   go("home");
+}
+async function doLogin(){
+  const email=($("loginEmail").value||"").trim();
+  const pass=$("loginPass").value||"";
+  if(!state.account){ toast("アカウントが見つかりません。入会申し込み(会員登録)からご登録ください"); return; }
+  if(email.toLowerCase()!==state.account.email.toLowerCase()){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  const h=await sha256(pass);
+  if(h!==state.account.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  enterMember();
   toast("ログインしました");
 }
-function doRegister(){
+async function doRegister(){
+  const name=($("regName").value||"").trim();
+  const email=($("regEmail").value||"").trim();
+  const pass=$("regPass").value||"";
+  if(!name||!email){ toast("氏名とメールアドレスを入力してください"); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast("メールアドレスの形式が正しくありません"); return; }
+  if(ADMIN_ACCOUNTS.some(a=>a.email===email.toLowerCase())){ toast("このメールアドレスは使用できません"); return; }
+  if(pass.length<8 || !/[a-zA-Z]/.test(pass) || !/[0-9]/.test(pass)){ toast("パスワードは8文字以上で英字と数字を含めてください"); return; }
   if(!$("agreeTos").checked){ toast("利用規約への同意が必要です"); return; }
-  toast("確認メールを送信しました(デモ)。メール内リンクで本登録が完了します。");
-  showAuth("login");
+  if(state.account){
+    if(!confirm("この端末には既にアカウントが登録されています。上書きして新規登録しますか?(既存の進捗・資格は削除されます)")) return;
+    state=defaultState();
+  }
+  const planKey=$("regPlan").value;
+  const plan=PLANS[planKey];
+  const passHash=await sha256(pass);
+  state.account={ name, kana:($("regKana").value||"").trim(), org:($("regOrg").value||"").trim(), email, passHash, plan:planKey, joined:today() };
+  state.user={ name, kana:state.account.kana, org:state.account.org, email };
+  // お申し込みプランの決済(実装時:Stripe Checkout Session を作成して遷移し、
+  // Webhook で決済確定後に entitlements を付与する)
+  state.payments.push({ id:newPaymentId(), date:today(), kind: planKey==="exam"?"受験料":"受講料",
+    item:plan.label, method:"クレジットカード(Stripe)", amount:plan.amount, taxRate:0.10, status:"paid" });
+  state.entitlements={ course:plan.course, exam:plan.exam };
+  persist();
+  enterMember();
+  toast("登録が完了しました。"+plan.label+" のお支払いを受け付けました");
 }
 function doLogout(){
-  stopExamTimer(); stopCam(); stopPlayer();
+  stopExamTimer(); stopCam(); stopPlayer(true);
+  persist();
   state.loggedIn=false; state.examStage="intro";
   toggleSide(false);
   $("memberShell").classList.remove("active");
   $("authArea").classList.remove("hide");
+  const le=$("loginEmail"); if(le && state.account) le.value=state.account.email;
   showAuth("login");
   toast("ログアウトしました");
+}
+function deleteAccount(){
+  closeModal("modalQuit");
+  Store.clear();
+  state=defaultState();
+  stopExamTimer(); stopCam(); stopPlayer();
+  $("memberShell").classList.remove("active");
+  $("authArea").classList.remove("hide");
+  const le=$("loginEmail"); if(le) le.value="";
+  showAuth("login");
+  toast("退会を受け付け、アカウントを削除しました");
+}
+/* サイドメニューのバッジ(進行状況に応じて表示) */
+function updateNavBadges(){
+  const c=$("navBadgeC"), b=$("navBadgeB");
+  if(c){
+    if(allDone()){ c.textContent="完了"; c.className="mini mini-done"; c.style.display=""; }
+    else if(doneCount()>0){ c.textContent="受講中"; c.className="mini mini-on"; c.style.display=""; }
+    else if(!state.entitlements.course){ c.textContent="未購入"; c.className="mini mini-prep"; c.style.display=""; }
+    else { c.textContent=""; c.style.display="none"; }
+  }
+  if(b){
+    if(!state.cert){ b.textContent="C級取得後"; b.className="mini mini-prep"; b.style.display=""; }
+    else if(bAllDone()){ b.textContent="完了"; b.className="mini mini-done"; b.style.display=""; }
+    else if(bDoneCount()>0){ b.textContent="受講中"; b.className="mini mini-on"; b.style.display=""; }
+    else { b.textContent=""; b.style.display="none"; }
+  }
 }
 
 /* ---------- ルーティング ---------- */
@@ -910,7 +1196,7 @@ function go(view, opt){
   state.view=view;
   toggleSide(false);
   VIEWS.forEach(v=>$("view-"+v).classList.toggle("hide", v!==view));
-  document.querySelectorAll(".snav").forEach(b=>{
+  document.querySelectorAll("#memberShell .snav").forEach(b=>{
     const lessonGrade = (view==="lesson" && player.lesson) ? (player.lesson.grade||"C") : null;
     const lessonNav = lessonGrade==="B" ? "gradeB" : "gradeC";
     b.classList.toggle("on", b.dataset.view===view || (view==="lesson"&&b.dataset.view===lessonNav));
@@ -933,25 +1219,41 @@ function renderHome(){
   <h1 class="page-title">マイページ</h1>
   <p class="page-lead">${esc(state.user.name)} さんの学習状況・試験・資格の情報をまとめています。</p>
 
-  ${nl?`
+  ${state.cert?`
+  <div class="resume-box mt-m">
+    <div class="grow">
+      <div style="font-size:16px;font-weight:700">C級 APS に合格しています</div>
+      <div style="font-size:13px;color:var(--muted)">認定証の確認・ダウンロード・SNSシェアができます。</div>
+    </div>
+    <button class="btn btn-blue btn-md" onclick="go('certs')">認定証を確認する</button>
+  </div>`
+  : !state.entitlements.course ? `
+  <div class="resume-box mt-m">
+    <div class="grow">
+      <div style="font-size:16px;font-weight:700">${state.entitlements.exam?"受験のみプランでご利用中です":"受講プランが未購入です"}</div>
+      <div style="font-size:13px;color:var(--muted)">${state.entitlements.exam?"準備ができ次第、認定試験を受験できます。":"C級講座の受講には受講プランのご購入が必要です。"}</div>
+    </div>
+    <button class="btn btn-blue btn-md" onclick="go('${state.entitlements.exam?"exam":"billing"}')">${state.entitlements.exam?"認定試験へ進む":"プランを確認する"}</button>
+  </div>`
+  : nl ? `
   <div class="resume-box mt-m">
     <div class="thumb"></div>
     <div class="grow">
-      <div style="font-size:12px;color:var(--muted)">前回の続き ／ ${esc(nl.cat.name)}(${esc(instOf(nl))})</div>
+      <div style="font-size:12px;color:var(--muted)">${doneCount()===0&&state.resumeSec===0?"はじめる ／ ":"前回の続き ／ "}${esc(nl.cat.name)}(${esc(instOf(nl))})</div>
       <div style="font-size:17px;font-weight:700;line-height:1.5">${esc(nl.t)}</div>
-      <div style="font-size:12.5px;color:var(--muted)">${nl.id===state.current?`しおり:${fmtTime(state.resumeSec)} から再生できます`:`収録時間:約${fmtMin(nl.dur)}`}</div>
+      <div style="font-size:12.5px;color:var(--muted)">${nl.id===state.current&&state.resumeSec>0?`しおり:${fmtTime(state.resumeSec)} から再生できます`:`収録時間:約${fmtMin(nl.dur)}`}</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <button class="btn btn-blue btn-md" onclick="go('lesson','${nl.id}')">▶ 続きから再生</button>
+      <button class="btn btn-blue btn-md" onclick="go('lesson','${nl.id}')">${doneCount()===0&&state.resumeSec===0?"▶ 受講を開始する":"▶ 続きから再生"}</button>
       <button class="btn btn-line btn-sm" onclick="go('gradeC')">動画一覧を見る</button>
     </div>
-  </div>`:`
+  </div>` : `
   <div class="resume-box mt-m">
     <div class="grow">
-      <div style="font-size:16px;font-weight:700">${state.cert?"C級 APS に合格しています":"すべてのレッスンを完了しています"}</div>
-      <div style="font-size:13px;color:var(--muted)">${state.cert?"認定証の確認・ダウンロード・SNSシェアができます。":"C級認定試験を受験できます。"}</div>
+      <div style="font-size:16px;font-weight:700">すべてのレッスンを完了しています</div>
+      <div style="font-size:13px;color:var(--muted)">${state.entitlements.exam?"C級認定試験を受験できます。":"受験には受験料のお支払いが必要です。"}</div>
     </div>
-    <button class="btn btn-blue btn-md" onclick="go('${state.cert?"certs":"exam"}')">${state.cert?"認定証を確認する":"認定試験へ進む"}</button>
+    <button class="btn btn-blue btn-md" onclick="go('exam')">認定試験へ進む</button>
   </div>`}
 
   <h2 class="h-bar">学習進捗<small>C級 アスレティックパフォーマンスサイエンティスト</small></h2>
@@ -974,9 +1276,16 @@ function renderHome(){
 
   <h2 class="h-bar">試験・資格の状況</h2>
   <table class="dl-table">
-    <tr><th>C級 認定試験</th><td>${state.cert?'<span class="tag tag-ok">合格</span>':allDone()?'<span class="tag tag-blue">受験可能</span> <button class="btn btn-blue btn-sm" style="margin-left:10px" onclick="go(\'exam\')">受験する</button>':`<span class="tag tag-gray">未受験</span> <span style="font-size:12.5px;color:var(--muted)">全レッスン完了で受験できます(残り${totalLessons-doneCount()})</span>`}</td></tr>
+    <tr><th>C級 認定試験</th><td>${state.cert?'<span class="tag tag-ok">合格</span>'
+      :examEligible()?'<span class="tag tag-blue">受験可能</span> <button class="btn btn-blue btn-sm" style="margin-left:10px" onclick="go(\'exam\')">受験する</button>'
+      :!state.entitlements.exam?'<span class="tag tag-gray">未受験</span> <span style="font-size:12.5px;color:var(--muted)">受験には受験料のお支払いが必要です</span>'
+      :`<span class="tag tag-gray">未受験</span> <span style="font-size:12.5px;color:var(--muted)">全レッスン完了で受験できます(残り${totalLessons-doneCount()})</span>`}</td></tr>
     <tr><th>C級 資格</th><td>${state.cert?`<span class="tag tag-ok">取得済</span> <span style="font-size:13px">資格ID:${state.cert.id}</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('certs')">認定証を見る</button>`:'<span class="tag tag-gray">未取得</span>'}</td></tr>
-    <tr><th>B級 講座</th><td><span class="tag tag-blue">受講中</span> <span style="font-size:12.5px;color:var(--muted)">${bDoneCount()}/${bTotalLessons} レッスン完了</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('gradeB')">B級講座へ</button></td></tr>
+    <tr><th>B級 講座</th><td>${!state.cert
+      ?'<span class="tag tag-gray">未開放</span> <span style="font-size:12.5px;color:var(--muted)">C級APS取得後に受講いただけます</span>'
+      :bAllDone()?`<span class="tag tag-ok">完了</span> <span style="font-size:12.5px;color:var(--muted)">全レッスン完了</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('gradeB')">B級講座へ</button>`
+      :bDoneCount()>0?`<span class="tag tag-blue">受講中</span> <span style="font-size:12.5px;color:var(--muted)">${bDoneCount()}/${bTotalLessons} レッスン完了</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('gradeB')">B級講座へ</button>`
+      :`<span class="tag tag-blue">受講可</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('gradeB')">B級講座へ</button>`}</td></tr>
     <tr><th>A級 講座</th><td><span class="tag tag-gray">準備中</span> <span style="font-size:12.5px;color:var(--muted)">開講情報は<a href="javascript:void(0)" onclick="go('gradeA')">A級講座</a>のページをご覧ください</span></td></tr>
   </table>
 
@@ -985,7 +1294,7 @@ function renderHome(){
     ${DATA.notices.slice(0,3).map(n=>`
       <div class="news-row" onclick="go('notices')">
         <span class="date">${n.date}</span>
-        ${n.read?"":'<span class="tag tag-new">NEW</span>'}
+        ${state.readNotices.includes(n.id)?"":'<span class="tag tag-new">NEW</span>'}
         <span class="t">${esc(n.t)}</span>
       </div>`).join("")}
   </div>
@@ -1057,6 +1366,27 @@ function renderGradeC(){
 
 /* ---------- B級講座(動画一覧) ---------- */
 function renderGradeB(){
+  if(!state.cert){
+    $("view-gradeB").innerHTML = `
+    ${crumb(["B級講座(動画)"])}
+    <h1 class="page-title">B級講座(動画)</h1>
+    <p class="page-lead">アスレティックパフォーマンスサイエンティスト(APS)B級 — 測定の「実技」と現場実装を学ぶ実践講座です。</p>
+    <div class="box box-pad mt-m center" style="padding:56px 24px">
+      <p style="font-size:16px;font-weight:700">B級講座は C級APS 取得後に受講いただけます</p>
+      <p style="font-size:13.5px;color:var(--muted);margin:10px auto 0;max-width:36em">まずはC級講座の受講と認定試験の合格を目指しましょう。C級合格後、このページからB級の動画レッスンを受講できます。</p>
+      <div class="mt-m" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-line btn-md" onclick="go('gradeC')">C級講座(動画)へ</button>
+        <button class="btn btn-blue btn-md" onclick="go('exam')">C級認定試験へ</button>
+      </div>
+    </div>
+    <h2 class="h-bar">B級講座の概要</h2>
+    <table class="dl-table">
+      <tr><th>受講形式</th><td>オンライン動画 + 実技研修(対面・東京)</td></tr>
+      <tr><th>受講条件</th><td>C級APS 取得者</td></tr>
+      <tr><th>内容</th><td>特別講義/測定の実技/データ分析・評価の実技/論文の発信の実技/ハイパフォーマンスに必要な知識(全${bTotalLessons}レッスン)</td></tr>
+    </table>`;
+    return;
+  }
   const pct=bProgressPct();
   const nl=bNextLesson();
   $("view-gradeB").innerHTML = `
@@ -1270,6 +1600,14 @@ function renderAbout(){
 let player = { timer:null, pos:0, dur:0, speed:1, lesson:null, playing:false };
 
 function renderLesson(id){
+  { // 受講権限ガード
+    const g0=(id||"").startsWith("b")?"B":"C";
+    if(g0==="B" && !state.cert){ go("gradeB"); return; }
+    if(g0==="C" && !state.entitlements.course){
+      toast("C級講座の受講には受講プランのご購入が必要です");
+      go("home"); return;
+    }
+  }
   const l = allLessons.find(x=>x.id===id) || nextLesson() || cLessons[0];
   const grade = l.grade || "C";
   const gradeView = grade==="B"?"gradeB":"gradeC";
@@ -1351,12 +1689,14 @@ function togglePlay(){
   player.playing=!player.playing;
   $("bigPlay").classList.toggle("pause",player.playing);
   if(player.playing){
+    // 実時間再生(0.25秒刻み)。実装時はここを動画プレイヤー(Vimeo/Stream)の
+    // timeupdate イベントに差し替える。シークバー操作も可能。
     player.timer=setInterval(()=>{
-      player.pos=Math.min(player.dur, player.pos + Math.max(3, player.dur/150)*player.speed);
+      player.pos=Math.min(player.dur, player.pos + 0.25*player.speed);
       updatePlayerUI();
       if(player.pos/player.dur>=0.8 && !doneSetFor(player.lesson.grade||"C").has(player.lesson.id)) markDone(player.lesson.id, true);
-      if(player.pos>=player.dur) stopPlayer();
-    },100);
+      if(player.pos>=player.dur) stopPlayer(true);
+    },250);
   } else stopPlayer(true);
 }
 function stopPlayer(keepPos){
@@ -1366,6 +1706,7 @@ function stopPlayer(keepPos){
     const g=player.lesson.grade||"C";
     if(g==="B" && player.lesson.id===state.bcurrent) state.bresumeSec=Math.floor(player.pos);
     else if(g==="C" && player.lesson.id===state.current) state.resumeSec=Math.floor(player.pos);
+    persist();
   }
 }
 function updatePlayerUI(){
@@ -1398,8 +1739,9 @@ function markDone(id, silent){
   const idx=list.findIndex(l=>l.id===id);
   const nx=list.slice(idx+1).find(l=>!set.has(l.id))||list.find(l=>!set.has(l.id));
   if(nx){ if(grade==="B"){ state.bcurrent=nx.id; state.bresumeSec=0; } else { state.current=nx.id; state.resumeSec=0; } }
+  persist(); updateNavBadges();
   toast(`「${list[idx].t}」を完了として記録しました`);
-  if(grade==="C" && allDone()) setTimeout(()=>toast("全レッスン完了です。C級認定試験を受験できます"),1400);
+  if(grade==="C" && allDone()) setTimeout(()=>toast(state.entitlements.exam?"全レッスン完了です。C級認定試験を受験できます":"全レッスン完了です。受験には「受験のみ」プランの購入が必要です"),1400);
   if(grade==="B" && bAllDone()) setTimeout(()=>toast("B級講座の全レッスンを完了しました"),1400);
   if(state.view==="lesson" && !silent) renderLesson(id);
   else if(state.view==="lesson"){ const lp=$("lsPct"); if(lp) lp.textContent="100%"; }
@@ -1416,8 +1758,20 @@ function renderExam(){
   else if(st==="live") v.innerHTML=examLiveHtml();
   else if(st==="result") v.innerHTML=examResultHtml();
 }
+function examEligible(){
+  // 受講権限がある場合は全レッスン完了が条件。受験のみプランはレッスン要件なし。
+  return state.entitlements.exam && (!state.entitlements.course || allDone());
+}
+function buyExamEntitlement(){
+  // 実装時:Stripe Checkout で「受験のみ 20,000円」を決済し、Webhookで権限付与
+  state.payments.push({ id:newPaymentId(), date:today(), kind:"受験料", item:"C級 受験のみ",
+    method:"クレジットカード(Stripe)", amount:20000, taxRate:0.10, status:"paid" });
+  state.entitlements.exam=true;
+  persist(); renderExam();
+  toast("受験料のお支払いを受け付けました。受験できるようになりました");
+}
 function examIntroHtml(){
-  const ok=allDone(); const pct=progressPct();
+  const ok=examEligible(); const pct=progressPct();
   return `
   ${crumb(["認定試験"])}
   <h1 class="page-title">認定試験</h1>
@@ -1432,16 +1786,25 @@ function examIntroHtml(){
   </table>
 
   <h2 class="h-bar">受験資格</h2>
-  <div class="box box-pad">
-    <p style="font-size:14px;margin-bottom:12px">C級講座 全 ${totalLessons} レッスンの完了で受験資格が付与されます。</p>
-    <div class="pbar-row">${pbar(pct,{ok})}<span class="pbar-num">${doneCount()}/${totalLessons} 完了</span></div>
-    <div class="mt-s">
-      ${ok?'<span class="tag tag-blue">受験資格あり</span>'
-        :`<span class="tag tag-warn">残り ${totalLessons-doneCount()} レッスン</span>
-          <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go('gradeC')">C級講座(動画)へ</button>
-          <button class="btn btn-line btn-sm" onclick="demoCompleteAll()">残りを一括完了にする(デモ操作)</button>`}
-    </div>
-  </div>
+  <table class="dl-table">
+    <tr><th>受験権限</th><td>${state.entitlements.exam
+      ? '<span class="tag tag-ok">あり</span> <span style="font-size:12.5px;color:var(--muted)">お申し込みプランに受験が含まれています</span>'
+      : `<span class="tag tag-warn">未購入</span> <span style="font-size:12.5px;color:var(--muted)">受験には受験料のお支払いが必要です(20,000円・税込)</span>
+         <button class="btn btn-blue btn-sm" style="margin-left:10px" onclick="buyExamEntitlement()">受験料を支払う</button>`}</td></tr>
+    ${state.entitlements.course?`
+    <tr><th>レッスン完了状況</th><td>
+      <div class="pbar-row" style="max-width:460px">${pbar(pct,{ok:allDone()})}<span class="pbar-num">${doneCount()}/${totalLessons} 完了</span></div>
+      ${allDone()?'':'<div class="mt-s"><span class="tag tag-warn">残り '+(totalLessons-doneCount())+' レッスン</span> <button class="btn btn-line btn-sm" style="margin-left:10px" onclick="go(\'gradeC\')">C級講座(動画)へ</button></div>'}
+    </td></tr>`:`
+    <tr><th>レッスン</th><td><span style="font-size:13px;color:var(--muted)">受験のみプランのため、レッスンの完了要件はありません。</span></td></tr>`}
+    <tr><th>受験可否</th><td>${ok?'<span class="tag tag-blue">受験できます</span>':'<span class="tag tag-gray">上記の条件を満たすと受験できます</span>'}</td></tr>
+  </table>
+
+  ${state.attempts.length?`
+  <h2 class="h-bar">受験履歴</h2>
+  <table class="dl-table">
+    ${state.attempts.map(a=>`<tr><th>${a.date}</th><td>${a.pass?'<span class="tag tag-ok">合格</span>':'<span class="tag tag-bad">不合格</span>'} ${a.score}点(正答${a.correct}/${a.total})${a.warns?` ／ 離脱検知${a.warns}回`:""}${a.timeout?" ／ 時間切れ自動提出":""}</td></tr>`).join("")}
+  </table>`:""}
 
   ${state.cert?`<div class="box box-pad mt-m" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
     <div><span class="tag tag-ok">合格済み</span> <span style="font-size:14px;margin-left:8px">この試験には合格しています(${state.cert.date})。</span></div>
@@ -1451,11 +1814,6 @@ function examIntroHtml(){
     <button class="btn btn-navy btn-lg" ${ok?"":"disabled"} onclick="state.examStage='rules';renderExam();window.scrollTo({top:0})">受験手続きに進む</button>
     ${!ok?'<p style="font-size:12.5px;color:var(--faint);margin-top:10px">※ 全レッスン完了後にお進みいただけます</p>':""}
   </div>`;
-}
-function demoCompleteAll(){
-  allLessons.forEach(l=>state.done.add(l.id));
-  toast("(デモ)全レッスンを完了にしました");
-  renderExam();
 }
 function examRulesHtml(){
   return `
@@ -1587,10 +1945,15 @@ function submitExam(timeout){
   const correct=qs.reduce((n,q,i)=>n+(exam.answers[i]===q.a?1:0),0);
   const score=Math.round(correct/qs.length*100);
   const pass=score>=DATA.exam.passRate;
-  state.lastResult={score,correct,total:qs.length,pass,timeout,warns:exam.warns,date:new Date().toISOString().slice(0,10).replace(/-/g,".")};
+  state.lastResult={score,correct,total:qs.length,pass,timeout,warns:exam.warns,date:today()};
+  state.attempts.push(state.lastResult);
   if(pass && !state.cert){
-    state.cert={ id:"APS-C-2026-"+String(Math.floor(1000+Math.random()*9000)), date:state.lastResult.date, expiry:"2029."+state.lastResult.date.slice(5) };
+    // 認定番号は本来サーバー側で採番する。ここでは仮番号を発行し、
+    // バックエンド導入時に正式番号へ置き換える。
+    const seq=String(state.attempts.filter(a=>a.pass).length).padStart(4,"0");
+    state.cert={ id:`APS-C-${new Date().getFullYear()}-${seq}`, date:state.lastResult.date, expiry:addYears(state.lastResult.date,3) };
   }
+  persist(); updateNavBadges();
   state.examStage="result"; renderExam(); window.scrollTo({top:0});
   if(timeout) toast("制限時間となったため自動提出しました");
 }
@@ -1735,7 +2098,7 @@ function renderNotices(){
     ${DATA.notices.map(n=>`
       <div class="news-row" id="nr-${n.id}" onclick="toggleNotice('${n.id}')">
         <span class="date">${n.date}</span>
-        ${n.read?"":'<span class="tag tag-new" id="new-'+n.id+'">NEW</span>'}
+        ${state.readNotices.includes(n.id)?"":'<span class="tag tag-new" id="new-'+n.id+'">NEW</span>'}
         <span class="t">${esc(n.t)}</span>
         <div class="body">${esc(n.body)}</div>
       </div>`).join("")}
@@ -1751,10 +2114,10 @@ function toggleNotice(id){
   const n=DATA.notices.find(x=>x.id===id);
   const el=$("nr-"+id);
   el.classList.toggle("open");
-  if(!n.read){ n.read=true; const u=$("new-"+id); if(u)u.remove(); updateNoticeBadge(); }
+  if(!state.readNotices.includes(id)){ state.readNotices.push(id); persist(); const u=$("new-"+id); if(u)u.remove(); updateNoticeBadge(); }
 }
 function updateNoticeBadge(){
-  const c=DATA.notices.filter(n=>!n.read).length;
+  const c=DATA.notices.filter(n=>!state.readNotices.includes(n.id)).length;
   const b=$("noticeBadge");
   if(b){ b.textContent=c; b.style.display=c?"":"none"; }
 }
@@ -1803,11 +2166,24 @@ function saveProfile(){
   state.user.kana=$("pfKana").value;
   state.user.org=$("pfOrg").value;
   state.user.email=$("pfEmail").value||state.user.email;
+  Object.assign(state.account,{name:state.user.name,kana:state.user.kana,org:state.user.org,email:state.user.email});
+  persist();
   $("hdrUserName").textContent=state.user.name+" さん";
-  document.querySelector(".member-topbar .who").textContent=state.user.name+" さん";
+  const w=$("topWho"); if(w) w.textContent=state.user.name+" さん";
   toast("会員情報を保存しました");
 }
 
+
+function applySeminar(id){
+  const sm=DATA.seminars.find(x=>x.id===id);
+  if(!sm) return;
+  if(state.payments.some(p=>p.seminarId===id)){ toast("このセミナーには申込済みです"); return; }
+  // 実装時:Stripe Checkout で決済後に確定
+  state.payments.push({ id:newPaymentId(), seminarId:id, date:today(), kind:"セミナー",
+    item:`実践セミナー『${sm.title}』受講料`, method:"クレジットカード(Stripe)", amount:sm.fee, taxRate:0.10, status:"paid" });
+  persist(); renderSeminars();
+  toast("セミナーの申込とお支払いを受け付けました");
+}
 
 /* ---------- 支払い・請求(決済基盤:Stripe) ---------- */
 function startStripeCheckout(payId){
@@ -1827,7 +2203,7 @@ function taxBreakdown(pm){
   return {net, tax, total};
 }
 function renderBilling(){
-  const rows = DATA.payments.map(pm=>{
+  const rows = state.payments.map(pm=>{
     const paid = pm.status==="paid";
     return `<tr>
       <td class="num" style="white-space:nowrap">${pm.date}</td>
@@ -1841,7 +2217,7 @@ function renderBilling(){
       </td>
     </tr>`;
   }).join("");
-  const totalPaid = DATA.payments.filter(p=>p.status==="paid").reduce((a,b)=>a+b.amount,0);
+  const totalPaid = state.payments.filter(p=>p.status==="paid").reduce((a,b)=>a+b.amount,0);
   $("view-billing").innerHTML = `
   ${crumb(["支払い・請求"])}
   <h1 class="page-title">支払い・請求</h1>
@@ -1849,8 +2225,8 @@ function renderBilling(){
 
   <table class="dl-table mt-m">
     <tr><th>お支払い済み合計</th><td><b style="font-size:16px">${yen(totalPaid)}円</b>(税込)</td></tr>
-    <tr><th>登録済みのお支払い方法</th><td style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <span>${DATA.billingProfile.card.brand} •••• ${DATA.billingProfile.card.last4} <span style="font-size:12px;color:var(--muted)">(有効期限 ${String(DATA.billingProfile.card.expMonth).padStart(2,"0")}/${DATA.billingProfile.card.expYear})</span></span>
+    <tr><th>お支払い方法の管理</th><td style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--muted)">カード情報は Stripe に安全に保管されます(当サイトでは保持しません)。</span>
       <button class="btn btn-line btn-sm" onclick="openStripePortal()">お支払い方法を管理</button>
     </td></tr>
     <tr><th>お支払い方法</th><td>クレジットカード(Stripe による安全な決済)/ 銀行振込</td></tr>
@@ -1858,6 +2234,7 @@ function renderBilling(){
   </table>
 
   <h2 class="h-bar">お支払い履歴</h2>
+  ${state.payments.length?`
   <table class="lesson-table">
     <thead><tr>
       <th style="width:104px">日付</th><th style="width:150px">区分</th><th>項目</th>
@@ -1865,12 +2242,15 @@ function renderBilling(){
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>
-  <p style="font-size:12px;color:var(--faint);margin-top:8px">※ 表示は税込金額です。請求書・領収書には消費税(10%)の内訳を記載しています。</p>`;
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">※ 表示は税込金額です。請求書・領収書には消費税(10%)の内訳を記載しています。</p>`
+  :`<div class="box box-pad center" style="padding:44px 24px">
+    <p style="font-size:14px;color:var(--muted)">お支払い履歴はまだありません。</p>
+  </div>`}`;
 }
 
 /* ---------- 帳票(請求書・領収書)生成 ---------- */
 function openDoc(type, payId){
-  const pm=DATA.payments.find(p=>p.id===payId);
+  const pm=state.payments.find(p=>p.id===payId);
   if(!pm){ toast("明細が見つかりません"); return; }
   const co=DATA.company;
   const {net,tax,total}=taxBreakdown(pm);
@@ -1946,7 +2326,9 @@ function renderSeminars(){
       </div>
       <div class="sem-side">
         ${open
-          ? `<button class="btn btn-blue btn-md" onclick="toast('セミナーに申し込みます(デモ)')">申し込む</button>
+          ? (state.payments.some(p=>p.seminarId===sm.id)
+              ? `<button class="btn btn-line btn-md" disabled>申込済み</button>`
+              : `<button class="btn btn-blue btn-md" onclick="applySeminar('${sm.id}')">申し込む</button>`)+`
              <button class="btn btn-line btn-sm" onclick="toast('詳細ページを開きます(デモ)')">詳細</button>`
           : `<button class="btn btn-line btn-md" onclick="toast('開催通知を登録しました(デモ)')">開催通知を受け取る</button>`}
       </div>
@@ -1991,6 +2373,862 @@ function renderSeminars(){
 /* ---------- 初期化 ---------- */
 updateNoticeBadge();
 showAuth("login");
+if(state.account){ const le=$("loginEmail"); if(le) le.value=state.account.email; }
+</script>
+<script>
+/* アドミン専用ヘルパー(メンバー側の $ / esc / yen / toast を共用) */
+
+/* ==========================================================
+   モックデータ(実装時はAPI/DBに置き換え)
+   ========================================================== */
+const CONTENT = {
+  C: [
+    { id:"m0", name:"特別講義", inst:"山下", lessons:[
+      { id:"m0-1", t:"スポーツサイエンティストの国際情勢", dur:60, pub:true, views:412, comp:88 } ]},
+    { id:"m1", name:"測定の知識", inst:"西海", lessons:[
+      { id:"m1-1", t:"測定・モニタリングの設計", dur:60, pub:true, views:398, comp:84 },
+      { id:"m1-2", t:"測定機器の知識", dur:90, pub:true, views:371, comp:79 } ]},
+    { id:"m2", name:"データ分析/評価の知識", inst:"西海", lessons:[
+      { id:"m2-1", t:"統計・分析の知識", dur:150, pub:true, views:344, comp:66 },
+      { id:"m2-2", t:"評価とフィードバックの知識", dur:60, pub:true, views:329, comp:81 } ]},
+    { id:"m3", name:"論文の知識", inst:"西岡", lessons:[
+      { id:"m3-1", t:"論文の検索方法", dur:30, pub:true, views:318, comp:90 },
+      { id:"m3-2", t:"書籍と論文の違い・特徴", dur:30, pub:true, views:305, comp:89 },
+      { id:"m3-3", t:"論文の構造・エビデンスピラミッド", dur:30, pub:true, views:296, comp:86 } ]},
+    { id:"m4", name:"測定評価介入の知識(各論)", inst:"各分野の専門講師", lessons:[
+      { id:"m4-1", t:"スポーツ傷害に関する測定評価介入(傷害調査)", dur:90, inst:"眞下", pub:true, views:281, comp:74 },
+      { id:"m4-2", t:"爆発的パワー編(CMJ地面反力・FVP・体組成・筋力等)", dur:120, inst:"西海", pub:true, views:288, comp:69 },
+      { id:"m4-3", t:"持久力編(無酸素パワー・VO2max・RSA)", dur:90, inst:"竹井", pub:true, views:262, comp:72 },
+      { id:"m4-4", t:"可搬式フォースプレートの基礎(CMJ)", dur:90, inst:"西海", pub:true, views:270, comp:75 },
+      { id:"m4-5", t:"GNSSの基礎", dur:90, inst:"山本", pub:true, views:243, comp:71 },
+      { id:"m4-6", t:"スプリント・スキル編", dur:90, inst:"西岡", pub:true, views:238, comp:70 },
+      { id:"m4-7", t:"生理学的マーカーに関する測定評価介入", dur:90, inst:"伊藤", pub:true, views:222, comp:68 },
+      { id:"m4-8", t:"主観的指標に関する測定評価介入", dur:90, inst:"西海", pub:true, views:214, comp:73 },
+      { id:"m4-9", t:"栄養に関する測定評価介入(BDHQ)", dur:90, inst:"安田", pub:true, views:205, comp:70 },
+      { id:"m4-10", t:"心理に関する測定評価介入(TOPS-2・SRSS等)", dur:90, inst:"相川", pub:true, views:198, comp:67 } ]},
+  ],
+  B: [
+    { id:"b0", name:"特別講義", inst:"河森", lessons:[
+      { id:"b0-1", t:"科学的根拠に基づく実践とは ―トレーニング指導を例に考える―", dur:90, pub:true, views:64, comp:81 } ]},
+    { id:"b1", name:"測定の実技", inst:"西海・西岡", lessons:[
+      { id:"b1-1", t:"主要指標の測定実技(ジャンプ・スプリント・COD・VO2max ほか)", dur:1800, pub:true, views:58, comp:44 },
+      { id:"b1-2", t:"スポーツ傷害の実際(傷害調査)", dur:90, inst:"眞下", pub:true, views:51, comp:63 },
+      { id:"b1-3", t:"生理学的マーカーの実際", dur:90, inst:"伊藤", pub:true, views:44, comp:58 },
+      { id:"b1-4", t:"栄養に関する測定評価介入の実際", dur:90, inst:"安田", pub:false, views:0, comp:0 },
+      { id:"b1-5", t:"心理に関する測定評価介入の実際", dur:90, inst:"相川", pub:false, views:0, comp:0 } ]},
+    { id:"b2", name:"データ分析/評価の実技", inst:"西海・西岡", lessons:[
+      { id:"b2-1", t:"統計・分析の実技(CORISE Analytics)", dur:120, pub:true, views:39, comp:52 },
+      { id:"b2-2", t:"評価とフィードバックの実技", dur:90, pub:true, views:33, comp:49 } ]},
+    { id:"b3", name:"論文の発信の実技", inst:"西岡", lessons:[
+      { id:"b3-1", t:"論文の読み方", dur:60, pub:true, views:31, comp:64 },
+      { id:"b3-2", t:"発信の仕方・知見の伝え方", dur:60, pub:true, views:27, comp:61 },
+      { id:"b3-3", t:"検索の仕方(具体的に)", dur:60, pub:true, views:25, comp:66 } ]},
+    { id:"b4", name:"ハイパフォーマンスに必要な知識", inst:"各分野の専門講師", lessons:[
+      { id:"b4-1", t:"ピリオダイゼーション", dur:90, inst:"庄村", pub:true, views:29, comp:59 },
+      { id:"b4-2", t:"アジリティ", dur:90, inst:"山下", pub:true, views:24, comp:55 },
+      { id:"b4-3", t:"室内でのトラッキング", dur:90, inst:"小山", pub:false, views:0, comp:0 },
+      { id:"b4-4", t:"段階的リコンディショニング", dur:90, inst:"大垣", pub:true, views:22, comp:57 },
+      { id:"b4-5", t:"疲労-リカバリー", dur:90, inst:"伊藤", pub:true, views:21, comp:53 },
+      { id:"b4-6", t:"女性アスリート", dur:90, inst:"水田", pub:true, views:19, comp:51 },
+      { id:"b4-7", t:"育成年代のアスリート", dur:90, inst:"佐々木", pub:true, views:18, comp:54 },
+      { id:"b4-8", t:"負荷-疲労モニタリング", dur:90, inst:"西海", pub:true, views:20, comp:56 } ]},
+  ],
+};
+
+const STUDENTS = [
+  { id:"u001", name:"佐藤 拓真", kana:"サトウ タクマ", org:"松本ユナイテッドSC", email:"demo@s-cade.jp", plan:"C級 受講+受験", joined:"2026.06.15", status:"active", grade:"C", prog:100, exam:{date:"2026.07.11", score:84, pass:true, warns:0}, cert:"APS-C-0001", bprog:21 },
+  { id:"u002", name:"高橋 美咲", kana:"タカハシ ミサキ", org:"信州大学 陸上部", email:"m.takahashi@example.com", plan:"C級 受講+受験", joined:"2026.06.02", status:"active", grade:"C", prog:100, exam:{date:"2026.07.06", score:91, pass:true, warns:0}, cert:"APS-C-0002", bprog:0 },
+  { id:"u003", name:"鈴木 大輔", kana:"スズキ ダイスケ", org:"FCアルペン長野", email:"d.suzuki@example.com", plan:"C級 受講+受験", joined:"2026.05.28", status:"active", grade:"C", prog:100, exam:{date:"2026.07.08", score:66, pass:false, warns:1}, cert:null, bprog:0 },
+  { id:"u004", name:"伊藤 彩", kana:"イトウ アヤ", org:"—", email:"a.ito@example.com", plan:"C級 受講のみ", joined:"2026.06.20", status:"active", grade:"C", prog:72, exam:null, cert:null, bprog:0 },
+  { id:"u005", name:"渡辺 健", kana:"ワタナベ ケン", org:"松本山雅ジュニア", email:"k.watanabe@example.com", plan:"C級 受講+受験", joined:"2026.06.18", status:"active", grade:"C", prog:56, exam:null, cert:null, bprog:0 },
+  { id:"u006", name:"小林 直樹", kana:"コバヤシ ナオキ", org:"県立体育センター", email:"n.kobayashi@example.com", plan:"C級 受講+受験", joined:"2026.05.15", status:"active", grade:"C", prog:100, exam:{date:"2026.07.10", score:74, pass:true, warns:3}, cert:"APS-C-0003", bprog:0 },
+  { id:"u007", name:"加藤 由衣", kana:"カトウ ユイ", org:"—", email:"y.kato@example.com", plan:"C級 受講のみ", joined:"2026.07.01", status:"active", grade:"C", prog:28, exam:null, cert:null, bprog:0 },
+  { id:"u008", name:"吉田 光", kana:"ヨシダ ヒカル", org:"上田高校 サッカー部", email:"h.yoshida@example.com", plan:"C級 受講+受験", joined:"2026.06.10", status:"active", grade:"C", prog:89, exam:null, cert:null, bprog:0 },
+  { id:"u009", name:"山田 恵", kana:"ヤマダ メグミ", org:"クラブA", email:"m.yamada@example.com", plan:"受験のみ", joined:"2026.06.25", status:"active", grade:"C", prog:0, exam:{date:"2026.07.09", score:58, pass:false, warns:5}, cert:null, bprog:0 },
+  { id:"u010", name:"佐々木 蓮", kana:"ササキ レン", org:"—", email:"r.sasaki@example.com", plan:"C級 受講+受験", joined:"2026.04.30", status:"suspended", grade:"C", prog:41, exam:null, cert:null, bprog:0 },
+  { id:"u011", name:"松本 樹", kana:"マツモト イツキ", org:"松本大学", email:"i.matsumoto@example.com", plan:"C級 受講+受験", joined:"2026.05.05", status:"active", grade:"C", prog:100, exam:{date:"2026.06.28", score:88, pass:true, warns:0}, cert:"APS-C-0004", bprog:35 },
+  { id:"u012", name:"清水 悠人", kana:"シミズ ユウト", org:"—", email:"y.shimizu@example.com", plan:"C級 受講のみ", joined:"2026.07.08", status:"active", grade:"C", prog:6, exam:null, cert:null, bprog:0 },
+];
+
+const EXAM_SETTINGS = { limitMin:60, numQ:100, passRate:70, retake:"可(有料・回数制限なし)", resultMode:"即時自動採点" };
+
+const QBANK_META = { total:100, cats:[
+  ["測定の基礎知識",10],["測定機器",10],["爆発的パワー/ストレングス",10],["持久力・生理",10],
+  ["負荷・疲労モニタリング",5],["スプリント・アジリティ",5],["論文・エビデンス",10],["統計・データ分析",10],
+  ["評価・フィードバック",5],["傷害・調査",5],["栄養",5],["心理",5],["APSの役割・統括",10],
+]};
+
+const QSAMPLE = [
+  { id:"Q001", cat:"測定の基礎知識", q:"測定の「信頼性(reliability)」の説明として最も適切なものはどれか。", a:"同一条件で繰り返し測定したときの結果の一貫性", use:412, corr:88 },
+  { id:"Q014", cat:"測定機器", q:"フォースプレートで直接計測される物理量はどれか。", a:"地面反力", use:406, corr:92 },
+  { id:"Q027", cat:"爆発的パワー", q:"スプリントのFVPから得られる代表的指標はどれか。", a:"V0(理論最大速度)とF0(理論最大水平力)", use:398, corr:71 },
+  { id:"Q033", cat:"持久力・生理", q:"VO2maxの説明として正しいものはどれか。", a:"単位時間あたりに取り込み利用できる酸素の最大量", use:395, corr:90 },
+  { id:"Q052", cat:"論文・エビデンス", q:"エビデンスピラミッドで一般に上位とされるのはどれか。", a:"システマティックレビュー/メタアナリシス", use:390, corr:83 },
+  { id:"Q063", cat:"統計・データ分析", q:"効果量(effect size)を確認する主な目的はどれか。", a:"差の「大きさ=実質的意味」を評価するため", use:387, corr:64 },
+];
+
+const PROCTOR_SESSIONS = [
+  { id:"ps01", user:"u009", date:"2026.07.09 20:14", dur:"58:41", warns:5, snaps:117, flag:"review", note:"", result:"58点・不合格",
+    logs:[["20:14","試験開始"],["20:22","タブ離脱を検知(1回目)",1],["20:23","フォーカス復帰"],["20:31","タブ離脱を検知(2回目)",1],["20:37","タブ離脱を検知(3回目)",1],["20:44","コピー操作をブロック",1],["20:52","タブ離脱を検知(4-5回目)",1],["21:12","時間内提出"]] },
+  { id:"ps02", user:"u006", date:"2026.07.10 09:02", dur:"55:03", warns:3, snaps:110, flag:"review", note:"", result:"74点・合格",
+    logs:[["09:02","試験開始"],["09:18","フォーカス喪失を検知(1回目)",1],["09:19","復帰"],["09:40","タブ離脱を検知(2回目)",1],["09:41","復帰"],["09:49","タブ離脱を検知(3回目)",1],["09:57","時間内提出"]] },
+  { id:"ps03", user:"u003", date:"2026.07.08 19:30", dur:"60:00", warns:1, snaps:120, flag:"none", note:"", result:"66点・不合格(時間切れ自動提出)",
+    logs:[["19:30","試験開始"],["19:55","フォーカス喪失を検知(1回目)",1],["19:56","復帰"],["20:30","時間切れ・自動提出"]] },
+  { id:"ps04", user:"u001", date:"2026.07.11 10:05", dur:"49:22", warns:0, snaps:99, flag:"none", note:"", result:"84点・合格", logs:[["10:05","試験開始"],["10:54","時間内提出"]] },
+  { id:"ps05", user:"u002", date:"2026.07.06 14:00", dur:"52:10", warns:0, snaps:105, flag:"none", note:"", result:"91点・合格", logs:[["14:00","試験開始"],["14:52","時間内提出"]] },
+];
+
+const SALES = [
+  { id:"pi_3Nq0631", date:"2026.07.10", user:"u008", item:"C級 受講+受験セット", amount:49800, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0629", date:"2026.07.09", user:"u009", item:"C級 受験のみ", amount:20000, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0625", date:"2026.07.08", user:"u012", item:"C級 受講のみ", amount:35000, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0619", date:"2026.07.05", user:"u001", item:"実践セミナー受講料", amount:6000, method:"bank", status:"pending" },
+  { id:"pi_3Nq0601", date:"2026.07.01", user:"u007", item:"C級 受講のみ", amount:35000, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0587", date:"2026.06.25", user:"u009", item:"C級 受験のみ", amount:20000, method:"card", status:"refunded" },
+  { id:"pi_3Nq0561", date:"2026.06.20", user:"u004", item:"C級 受講のみ", amount:35000, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0552", date:"2026.06.18", user:"u005", item:"C級 受講+受験セット", amount:49800, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0540", date:"2026.06.15", user:"u001", item:"C級 受講+受験セット", amount:49800, method:"card", status:"succeeded" },
+  { id:"pi_3Nq0533", date:"2026.06.10", user:"u008", item:"APS 年会費(2026年度)", amount:8000, method:"card", status:"succeeded" },
+];
+const MONTHLY_SALES = [ ["2月",182000],["3月",256000],["4月",342000],["5月",488000],["6月",693400],["7月",405600] ];
+
+const ADM_NOTICES = [
+  { id:"an1", date:"2026.07.08", t:"C級認定試験:7月度の受験受付を開始しました", status:"公開中", until:"2026.07.31" },
+  { id:"an2", date:"2026.07.01", t:"新レッスン「WBGTと暑熱環境下のリスク管理」を公開しました", status:"公開中", until:"—" },
+  { id:"an3", date:"2026.06.20", t:"システムメンテナンスのお知らせ(6/25 2:00-4:00)", status:"掲載終了", until:"2026.06.25" },
+  { id:"an4", date:"—", t:"B級実技研修(第1回・東京)の日程について", status:"下書き", until:"—" },
+];
+const MAIL_TEMPLATES = ["会員登録の確認","パスワード再設定","受験受付完了","合格通知・認定証発行","不合格通知・再受験案内","開講・新レッスン通知","セミナー開催案内"];
+
+const admState = { view:"dash", currentStudent:null, currentSession:null };
+
+const admFmtMin = m => m>=60 ? (m%60? `${Math.floor(m/60)}時間${m%60}分` : `${m/60}時間`) : `${m}分`;
+function admToggleSide(open){ $("admSideMenu").classList.toggle("open",open); $("admSideOverlay").classList.toggle("show",open); }
+function admPbar(pct,opts={}){ return `<div class="admPbar"><div class="admPbar-fill ${opts.cls||""}" style="width:${pct}%"></div></div>`; }
+function studentOf(id){ return STUDENTS.find(s=>s.id===id); }
+function admOpenModal(html){ $("admModalBox").innerHTML=html; $("admModalBg").classList.add("show"); }
+function admCloseModal(){ $("admModalBg").classList.remove("show"); }
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") admCloseModal(); });
+
+/* ---------- ルーティング ---------- */
+const ADM_VIEWS=["dash","content","students","studentDetail","exam","proctor","proctorDetail","certs","sales","analytics","notices"];
+const ADM_VIEW_LABEL={dash:"ダッシュボード",content:"コンテンツ管理",students:"受講者管理",studentDetail:"受講者詳細",exam:"試験管理",proctor:"不正監視",proctorDetail:"監視レビュー",certs:"資格発行管理",sales:"決済・売上",analytics:"アクセス解析",notices:"お知らせ管理"};
+function admGo(view,opt){
+  admState.view=view;
+  admToggleSide(false);
+  ADM_VIEWS.forEach(v=>$("view-adm-"+v).classList.toggle("hide",v!==view));
+  document.querySelectorAll("#adminShell .snav").forEach(b=>{
+    const map={studentDetail:"students",proctorDetail:"proctor"};
+    b.classList.toggle("on", b.dataset.view===view || b.dataset.view===map[view]);
+  });
+  $("admTopLoc").textContent=ADM_VIEW_LABEL[view]||"";
+  const r={dash:renderDash,content:renderContent,students:renderStudents,studentDetail:()=>renderStudentDetail(opt),
+           exam:renderExamAdmin,proctor:renderProctor,proctorDetail:()=>renderProctorDetail(opt),
+           certs:renderCertsAdmin,sales:renderSales,analytics:renderAnalytics,notices:renderNoticesAdmin};
+  r[view]();
+  window.scrollTo({top:0});
+}
+function admCrumb(items){
+  return `<div class="breadcrumb"><a href="javascript:void(0)" onclick="admGo('dash')">ダッシュボード</a>${items.map(i=>` ＞ ${i}`).join("")}</div>`;
+}
+
+
+/* ==========================================================
+   各画面のレンダリング
+   ========================================================== */
+
+/* ---------- ダッシュボード ---------- */
+function renderDash(){
+  const active=STUDENTS.filter(s=>s.status==="active").length;
+  const passed=STUDENTS.filter(s=>s.exam&&s.exam.pass).length;
+  const attempts=STUDENTS.filter(s=>s.exam).length;
+  const passRate=attempts?Math.round(passed/attempts*100):0;
+  const monthSales=MONTHLY_SALES[MONTHLY_SALES.length-1][1];
+  const maxSales=Math.max(...MONTHLY_SALES.map(m=>m[1]));
+  const pendingReviews=PROCTOR_SESSIONS.filter(p=>p.flag==="review").length;
+  $("view-adm-dash").innerHTML = `
+  <div class="breadcrumb">ダッシュボード</div>
+  <h1 class="page-title">ダッシュボード</h1>
+  <p class="page-lead">運営状況のサマリーです(データは日次で更新されます)。</p>
+
+  <div class="grid4 mt-m">
+    <div class="kpi"><div class="lbl">受講者数(有効)</div><div class="val">${active}<small> 名</small></div><div class="sub"><span class="up">+3</span> 直近30日</div></div>
+    <div class="kpi"><div class="lbl">今月の売上</div><div class="val">¥${yen(monthSales)}</div><div class="sub">7月(進行中)</div></div>
+    <div class="kpi"><div class="lbl">C級 合格率</div><div class="val">${passRate}<small> %</small></div><div class="sub">受験 ${attempts} 件中 合格 ${passed} 件</div></div>
+    <div class="kpi"><div class="lbl">要確認の受験</div><div class="val" style="color:${pendingReviews?'var(--bad)':'var(--ink)'}">${pendingReviews}<small> 件</small></div><div class="sub"><a href="javascript:void(0)" onclick="admGo('proctor')">不正監視レビューへ ＞</a></div></div>
+  </div>
+
+  <div class="grid2 mt-l">
+    <div>
+      <h2 class="h-bar" style="margin-top:0">月次売上の推移</h2>
+      <div class="box box-pad">
+        <div class="vbar-wrap">
+          ${MONTHLY_SALES.map(m=>`<div class="vbar"><span class="vl">${Math.round(m[1]/10000)}万</span><div class="col" style="height:${Math.round(m[1]/maxSales*100)}%"></div><span class="lb">${m[0]}</span></div>`).join("")}
+        </div>
+      </div>
+    </div>
+    <div>
+      <h2 class="h-bar" style="margin-top:0">直近のアクティビティ</h2>
+      <div class="box" style="font-size:13px">
+        <div class="log-line" style="padding:11px 16px"><span class="t">07.11</span><span class="e">佐藤 拓真 さんがC級試験に合格(84点)— 認定証 APS-C-0001 を発行</span></div>
+        <div class="log-line" style="padding:11px 16px"><span class="t">07.10</span><span class="e">小林 直樹 さんの受験で離脱検知3回 — <a href="javascript:void(0)" onclick="admGo('proctorDetail','ps02')">レビュー待ち</a></span></div>
+        <div class="log-line" style="padding:11px 16px"><span class="t">07.10</span><span class="e">吉田 光 さんが「C級 受講+受験セット」を購入(¥49,800)</span></div>
+        <div class="log-line" style="padding:11px 16px"><span class="t">07.09</span><span class="e">山田 恵 さんの受験で離脱検知5回 — <a href="javascript:void(0)" onclick="admGo('proctorDetail','ps01')">レビュー待ち</a></span></div>
+        <div class="log-line" style="padding:11px 16px"><span class="t">07.08</span><span class="e">お知らせ「7月度の受験受付を開始」を公開</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="h-bar">受講の進み具合(C級)</h2>
+  <div class="box box-pad">
+    <div class="bar-list">
+      ${[["レッスン完了率(平均)",Math.round(STUDENTS.reduce((a,s)=>a+s.prog,0)/STUDENTS.length)],
+         ["受講完了者(100%)",Math.round(STUDENTS.filter(s=>s.prog===100).length/STUDENTS.length*100)],
+         ["受験済み",Math.round(attempts/STUDENTS.length*100)],
+         ["資格取得済み",Math.round(STUDENTS.filter(s=>s.cert).length/STUDENTS.length*100)]]
+        .map(r=>`<div class="bar-item"><span class="nm">${r[0]}</span>${admPbar(r[1])}<span class="num">${r[1]}%</span></div>`).join("")}
+    </div>
+  </div>`;
+}
+
+/* ---------- コンテンツ管理 ---------- */
+let contentGrade="C";
+function renderContent(){
+  const cats=CONTENT[contentGrade];
+  $("view-adm-content").innerHTML = `
+  ${admCrumb(["コンテンツ管理"])}
+  <h1 class="page-title">コンテンツ管理</h1>
+  <p class="page-lead">動画レッスンの登録・公開・並び替え・教材の管理を行います。</p>
+
+  <div class="table-tools mt-m">
+    <select onchange="contentGrade=this.value;renderContent()">
+      <option value="C" ${contentGrade==="C"?"selected":""}>C級講座</option>
+      <option value="B" ${contentGrade==="B"?"selected":""}>B級講座</option>
+    </select>
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="toast('章を追加します(デモ)')">+ 章を追加</button>
+    <button class="btn btn-blue btn-sm" onclick="editLesson(null)">+ レッスン追加</button>
+  </div>
+
+  ${cats.map((c,ci)=>`
+    <h2 class="h-bar">第${ci+1}章:${esc(c.name)}<small>担当:${esc(c.inst)}</small></h2>
+    <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr><th style="width:46px">順</th><th>レッスン名</th><th style="width:90px">担当</th><th style="width:70px" class="c">時間</th><th style="width:80px" class="c">視聴数</th><th style="width:120px">完了率</th><th style="width:76px" class="c">公開</th><th style="width:150px" class="c"></th></tr></thead>
+      <tbody>
+      ${c.lessons.map((l,li)=>`
+        <tr>
+          <td class="c">
+            <button class="btn btn-line btn-xs" ${li===0?"disabled":""} onclick="moveLesson('${c.id}',${li},-1)">↑</button>
+            <button class="btn btn-line btn-xs" ${li===c.lessons.length-1?"disabled":""} onclick="moveLesson('${c.id}',${li},1)">↓</button>
+          </td>
+          <td><b>${esc(l.t)}</b><br><span style="font-size:11.5px;color:var(--muted)">${l.id} ／ 教材2点 ／ 完了条件:視聴80%</span></td>
+          <td>${esc(l.inst||c.inst)}</td>
+          <td class="c">${admFmtMin(l.dur)}</td>
+          <td class="c">${l.views}</td>
+          <td><div class="admPbar-row">${admPbar(l.comp,{cls:l.comp>=75?"ok":""})}<span class="admPbar-num">${l.comp}%</span></div></td>
+          <td class="c"><span class="switch"><input type="checkbox" ${l.pub?"checked":""} onchange="togglePub('${c.id}','${l.id}',this.checked)"><span class="tr"></span></span></td>
+          <td class="c">
+            <button class="btn btn-line btn-xs" onclick="editLesson('${l.id}')">編集</button>
+            <button class="btn btn-line btn-xs" onclick="toast('教材を管理します(デモ)')">教材</button>
+            <button class="btn btn-danger btn-xs" onclick="toast('削除確認:実装時は確認ダイアログ+論理削除(デモ)')">削除</button>
+          </td>
+        </tr>`).join("")}
+      </tbody>
+    </table></div>`).join("")}
+
+  <h2 class="h-bar">動画のアップロード</h2>
+  <div class="box box-pad" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+    <p style="font-size:13px;color:var(--muted)">動画は配信基盤(Vimeo / Cloudflare Stream 等・要件定義書12.2)へアップロードし、レッスンに紐づけます。</p>
+    <button class="btn btn-blue btn-md" onclick="toast('アップロード画面を開きます(デモ)')">動画をアップロード</button>
+  </div>`;
+}
+function findLesson(id){ for(const g of ["C","B"]) for(const c of CONTENT[g]) { const l=c.lessons.find(x=>x.id===id); if(l) return {l,c}; } return null; }
+function togglePub(cid,lid,val){ const f=findLesson(lid); if(f){ f.l.pub=val; toast(`「${f.l.t}」を${val?"公開":"非公開"}にしました`); } }
+function moveLesson(cid,idx,dir){
+  const c=CONTENT[contentGrade].find(x=>x.id===cid);
+  const j=idx+dir; if(j<0||j>=c.lessons.length) return;
+  [c.lessons[idx],c.lessons[j]]=[c.lessons[j],c.lessons[idx]];
+  renderContent(); toast("表示順を変更しました");
+}
+function editLesson(id){
+  const f=id?findLesson(id):null;
+  const l=f?f.l:{t:"",dur:60,inst:"",pub:false};
+  admOpenModal(`
+    <h3>${id?"レッスンの編集":"レッスンの新規追加"}</h3>
+    <p class="sub">${id?esc(l.id):"保存時にIDが採番されます"}</p>
+    <div class="m-field"><label>レッスン名</label><input id="elT" value="${esc(l.t)}"></div>
+    <div class="grid2">
+      <div class="m-field"><label>収録時間(分)</label><input id="elD" type="number" value="${l.dur}"></div>
+      <div class="m-field"><label>担当講師</label><input id="elI" value="${esc(l.inst||(f?f.c.inst:""))}"></div>
+    </div>
+    <div class="m-field"><label>完了条件(視聴率%)</label><input type="number" value="80"></div>
+    <div class="m-field"><label>動画ファイル</label><input type="file" disabled><div style="font-size:11.5px;color:var(--faint)">デモのためアップロードは無効です(実装時は配信基盤へ)。</div></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="saveLesson('${id||""}')">保存する</button>
+    </div>`);
+}
+function saveLesson(id){
+  if(id){ const f=findLesson(id); if(f){ f.l.t=$("elT").value||f.l.t; f.l.dur=parseInt($("elD").value)||f.l.dur; f.l.inst=$("elI").value; } }
+  admCloseModal(); renderContent(); toast(id?"レッスンを更新しました":"レッスンを追加しました(デモ)");
+}
+
+/* ---------- 受講者管理 ---------- */
+let stuQuery="", stuFilter="all";
+function renderStudents(){
+  const q=stuQuery.toLowerCase();
+  const list=STUDENTS.filter(s=>{
+    const hit=!q||s.name.toLowerCase().includes(q)||s.kana.toLowerCase().includes(q)||s.email.toLowerCase().includes(q)||(s.org||"").toLowerCase().includes(q);
+    const f= stuFilter==="all" ? true
+      : stuFilter==="passed" ? !!s.cert
+      : stuFilter==="learning" ? (s.prog>0&&s.prog<100)
+      : stuFilter==="suspended" ? s.status==="suspended" : true;
+    return hit&&f;
+  });
+  $("view-adm-students").innerHTML = `
+  ${admCrumb(["受講者管理"])}
+  <h1 class="page-title">受講者管理</h1>
+  <p class="page-lead">受講者の検索・進捗確認・メッセージ配信・アカウント管理を行います。</p>
+
+  <div class="table-tools mt-m">
+    <input type="search" placeholder="氏名・フリガナ・メール・所属で検索" value="${esc(stuQuery)}" oninput="stuQuery=this.value;renderStudents()">
+    <select onchange="stuFilter=this.value;renderStudents()">
+      <option value="all" ${stuFilter==="all"?"selected":""}>すべて</option>
+      <option value="learning" ${stuFilter==="learning"?"selected":""}>受講中</option>
+      <option value="passed" ${stuFilter==="passed"?"selected":""}>資格取得済み</option>
+      <option value="suspended" ${stuFilter==="suspended"?"selected":""}>停止中</option>
+    </select>
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="openBroadcast()">一斉メッセージ</button>
+    <button class="btn btn-line btn-sm" onclick="toast('CSVをエクスポートしました(デモ)')">CSV出力</button>
+  </div>
+
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead><tr><th>氏名</th><th style="width:170px">所属</th><th style="width:140px">プラン</th><th style="width:150px">C級進捗</th><th style="width:110px" class="c">試験</th><th style="width:90px" class="c">資格</th><th style="width:78px" class="c">状態</th></tr></thead>
+    <tbody>
+    ${list.map(s=>`
+      <tr class="clickable" onclick="admGo('studentDetail','${s.id}')">
+        <td><b>${esc(s.name)}</b><br><span style="font-size:11px;color:var(--muted)">${esc(s.email)}</span></td>
+        <td>${esc(s.org)}</td>
+        <td style="font-size:12px">${esc(s.plan)}</td>
+        <td><div class="admPbar-row">${admPbar(s.prog,{cls:s.prog===100?"ok":""})}<span class="admPbar-num">${s.prog}%</span></div></td>
+        <td class="c">${s.exam?(s.exam.pass?`<span class="tag tag-ok">合格 ${s.exam.score}</span>`:`<span class="tag tag-bad">不合格 ${s.exam.score}</span>`):'<span class="tag tag-gray">未受験</span>'}</td>
+        <td class="c">${s.cert?'<span class="tag tag-ok">取得</span>':'—'}</td>
+        <td class="c">${s.status==="active"?'<span class="tag tag-blue">有効</span>':'<span class="tag tag-warn">停止</span>'}</td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">${list.length} 名を表示(全 ${STUDENTS.length} 名)。行をクリックすると詳細を表示します。</p>`;
+}
+function openBroadcast(){
+  admOpenModal(`
+    <h3>一斉メッセージの配信</h3>
+    <p class="sub">条件に一致する受講者へお知らせ・メールを配信します。</p>
+    <div class="m-field"><label>配信先</label>
+      <select><option>全受講者</option><option>受講中(進捗1-99%)</option><option>受講完了・未受験</option><option>資格取得者</option></select></div>
+    <div class="m-field"><label>件名</label><input placeholder="例)C級認定試験 受付中のご案内"></div>
+    <div class="m-field"><label>本文</label><textarea placeholder="本文を入力"></textarea></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="admCloseModal();toast('メッセージを配信しました(デモ)')">配信する</button>
+    </div>`);
+}
+function renderStudentDetail(id){
+  const s=studentOf(id)||STUDENTS[0];
+  admState.currentStudent=s.id;
+  const pay=SALES.filter(p=>p.user===s.id);
+  $("view-adm-studentDetail").innerHTML = `
+  ${admCrumb([`<a href="javascript:void(0)" onclick="admGo('students')">受講者管理</a>`, esc(s.name)])}
+  <h1 class="page-title">${esc(s.name)} <span style="font-size:13px;color:var(--muted);font-weight:500">(${esc(s.kana)})</span></h1>
+  <p class="page-lead">${esc(s.org)} ／ ${esc(s.email)} ／ 登録日:${s.joined}</p>
+
+  <div class="mt-s" style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-line btn-sm" onclick="openMessage('${s.id}')">メッセージを送る</button>
+    ${s.status==="active"
+      ?`<button class="btn btn-danger btn-sm" onclick="toggleSuspend('${s.id}')">アカウントを停止する</button>`
+      :`<button class="btn btn-blue btn-sm" onclick="toggleSuspend('${s.id}')">停止を解除する</button>`}
+    <button class="btn btn-danger btn-sm" onclick="toast('退会処理:実装時は確認+データ削除フロー(要件7.2)')">退会処理</button>
+  </div>
+
+  <h2 class="h-bar">受講状況</h2>
+  <table class="dl-table">
+    <tr><th>プラン</th><td>${esc(s.plan)}</td></tr>
+    <tr><th>C級 進捗</th><td><div class="admPbar-row" style="max-width:420px">${admPbar(s.prog,{cls:s.prog===100?"ok":""})}<span class="admPbar-num">${s.prog}%</span></div></td></tr>
+    ${s.bprog?`<tr><th>B級 進捗</th><td><div class="admPbar-row" style="max-width:420px">${admPbar(s.bprog)}<span class="admPbar-num">${s.bprog}%</span></div></td></tr>`:""}
+    <tr><th>試験結果</th><td>${s.exam
+      ? `${s.exam.date} 受験 — ${s.exam.pass?'<span class="tag tag-ok">合格</span>':'<span class="tag tag-bad">不合格</span>'} ${s.exam.score}点(離脱検知 ${s.exam.warns}回)`
+      : '<span class="tag tag-gray">未受験</span>'}</td></tr>
+    <tr><th>資格</th><td>${s.cert?`<span class="tag tag-ok">取得済</span> ${s.cert} <button class="btn btn-line btn-xs" style="margin-left:8px" onclick="toast('認定証を再発行しました(デモ)')">認定証を再発行</button>`:"—"}</td></tr>
+    <tr><th>アカウント状態</th><td>${s.status==="active"?'<span class="tag tag-blue">有効</span>':'<span class="tag tag-warn">停止中</span>'}</td></tr>
+  </table>
+
+  <h2 class="h-bar">購入履歴</h2>
+  ${pay.length?`
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th style="width:100px">日付</th><th>項目</th><th style="width:110px" class="r">金額</th><th style="width:100px" class="c">状態</th></tr></thead>
+    <tbody>${pay.map(p=>`<tr><td>${p.date}</td><td>${esc(p.item)}<br><span style="font-size:11px;color:var(--muted)">${p.id}</span></td><td class="r">¥${yen(p.amount)}</td><td class="c">${salesStatusTag(p.status)}</td></tr>`).join("")}</tbody>
+  </table></div>`:'<p style="font-size:13px;color:var(--muted)">購入履歴はありません。</p>'}`;
+}
+function openMessage(id){
+  const s=studentOf(id);
+  admOpenModal(`
+    <h3>メッセージ送信 — ${esc(s.name)} さん</h3>
+    <p class="sub">サイト内のお知らせとメールで届きます。</p>
+    <div class="m-field"><label>件名</label><input placeholder="件名"></div>
+    <div class="m-field"><label>本文</label><textarea placeholder="本文"></textarea></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="admCloseModal();toast('メッセージを送信しました(デモ)')">送信する</button>
+    </div>`);
+}
+function toggleSuspend(id){
+  const s=studentOf(id);
+  s.status = s.status==="active" ? "suspended" : "active";
+  toast(s.status==="suspended"?`${s.name} さんのアカウントを停止しました`:`${s.name} さんの停止を解除しました`);
+  renderStudentDetail(id);
+}
+
+
+/* ---------- 試験管理 ---------- */
+function renderExamAdmin(){
+  const results=STUDENTS.filter(s=>s.exam).map(s=>({s, e:s.exam}));
+  $("view-adm-exam").innerHTML = `
+  ${admCrumb(["試験管理"])}
+  <h1 class="page-title">試験管理</h1>
+  <p class="page-lead">出題設定・問題バンク・受験結果を管理します(C級 認定試験)。</p>
+
+  <h2 class="h-bar">出題設定</h2>
+  <table class="dl-table">
+    <tr><th>制限時間</th><td>${EXAM_SETTINGS.limitMin}分 <button class="btn btn-line btn-xs" style="margin-left:8px" onclick="editExamSetting()">変更</button></td></tr>
+    <tr><th>出題数</th><td>全${EXAM_SETTINGS.numQ}問(問題バンクからランダム出題・選択肢シャッフル)</td></tr>
+    <tr><th>合格基準</th><td>正答率 ${EXAM_SETTINGS.passRate}% 以上</td></tr>
+    <tr><th>再受験</th><td>${EXAM_SETTINGS.retake}</td></tr>
+    <tr><th>採点・結果</th><td>${EXAM_SETTINGS.resultMode}(合格時は認定証を自動発行)</td></tr>
+    <tr><th>受験時の記録</th><td>顔スナップショット(30秒間隔)+ 操作ログ(タブ離脱・コピー操作等)— <a href="javascript:void(0)" onclick="admGo('proctor')">不正監視へ ＞</a></td></tr>
+  </table>
+
+  <h2 class="h-bar">問題バンク<small>全 ${QBANK_META.total} 問</small></h2>
+  <div class="table-tools">
+    <input type="search" placeholder="設問を検索(デモ)">
+    <select><option>全カテゴリ</option>${QBANK_META.cats.map(c=>`<option>${c[0]}</option>`).join("")}</select>
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="toast('CSVで一括登録します(デモ)')">CSV一括登録</button>
+    <button class="btn btn-blue btn-sm" onclick="editQuestion(null)">+ 設問を追加</button>
+  </div>
+  <div class="grid2">
+    <div class="box box-pad">
+      <p style="font-size:12.5px;font-weight:700;margin-bottom:10px">カテゴリ別の設問数</p>
+      <div class="bar-list">
+        ${QBANK_META.cats.map(c=>`<div class="bar-item"><span class="nm">${c[0]}</span>${admPbar(c[1]*10)}<span class="num">${c[1]}問</span></div>`).join("")}
+      </div>
+    </div>
+    <div>
+      <div class="table-scroll"><table class="data-table">
+        <thead><tr><th style="width:60px">ID</th><th>設問(抜粋)</th><th style="width:64px" class="c">正答率</th><th style="width:70px" class="c"></th></tr></thead>
+        <tbody>
+        ${QSAMPLE.map(q=>`
+          <tr><td>${q.id}</td><td style="font-size:12px"><b>${esc(q.q)}</b><br><span style="color:var(--muted)">正答:${esc(q.a)} ／ ${q.cat}</span></td>
+          <td class="c" style="color:${q.corr<70?'var(--warn)':'inherit'}">${q.corr}%</td>
+          <td class="c"><button class="btn btn-line btn-xs" onclick="editQuestion('${q.id}')">編集</button></td></tr>`).join("")}
+        </tbody>
+      </table></div>
+      <p style="font-size:11.5px;color:var(--faint);margin-top:6px">※ 正答率が低い設問は表現の見直し候補です(デモは6問のみ表示)。</p>
+    </div>
+  </div>
+
+  <h2 class="h-bar">受験結果<small>直近</small></h2>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th style="width:100px">受験日</th><th>受験者</th><th style="width:70px" class="c">得点</th><th style="width:80px" class="c">判定</th><th style="width:90px" class="c">離脱検知</th><th style="width:150px" class="c"></th></tr></thead>
+    <tbody>
+    ${results.map(r=>`
+      <tr>
+        <td>${r.e.date}</td>
+        <td><a href="javascript:void(0)" onclick="admGo('studentDetail','${r.s.id}')">${esc(r.s.name)}</a></td>
+        <td class="c"><b>${r.e.score}</b></td>
+        <td class="c">${r.e.pass?'<span class="tag tag-ok">合格</span>':'<span class="tag tag-bad">不合格</span>'}</td>
+        <td class="c">${r.e.warns?`<span class="tag tag-warn">${r.e.warns}回</span>`:"0回"}</td>
+        <td class="c">
+          <button class="btn btn-line btn-xs" onclick="toast('答案の内訳を表示します(デモ)')">答案</button>
+          ${r.e.warns>=3?`<button class="btn btn-danger btn-xs" onclick="admGo('proctor')">要レビュー</button>`:""}
+        </td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>`;
+}
+function editExamSetting(){
+  admOpenModal(`
+    <h3>出題設定の変更</h3>
+    <p class="sub">変更は次回の受験から適用されます。</p>
+    <div class="grid2">
+      <div class="m-field"><label>制限時間(分)</label><input id="esLimit" type="number" value="${EXAM_SETTINGS.limitMin}"></div>
+      <div class="m-field"><label>出題数</label><input id="esNum" type="number" value="${EXAM_SETTINGS.numQ}"></div>
+    </div>
+    <div class="m-field"><label>合格基準(%)</label><input id="esPass" type="number" value="${EXAM_SETTINGS.passRate}"></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="saveExamSetting()">保存する</button>
+    </div>`);
+}
+function saveExamSetting(){
+  EXAM_SETTINGS.limitMin=parseInt($("esLimit").value)||EXAM_SETTINGS.limitMin;
+  EXAM_SETTINGS.numQ=parseInt($("esNum").value)||EXAM_SETTINGS.numQ;
+  EXAM_SETTINGS.passRate=parseInt($("esPass").value)||EXAM_SETTINGS.passRate;
+  admCloseModal(); renderExamAdmin(); toast("出題設定を保存しました");
+}
+function editQuestion(id){
+  const q=QSAMPLE.find(x=>x.id===id)||{q:"",a:"",cat:QBANK_META.cats[0][0]};
+  admOpenModal(`
+    <h3>${id?`設問の編集(${id})`:"設問の新規追加"}</h3>
+    <div class="m-field"><label>カテゴリ</label><select>${QBANK_META.cats.map(c=>`<option ${c[0]===q.cat?"selected":""}>${c[0]}</option>`).join("")}</select></div>
+    <div class="m-field"><label>設問文</label><textarea>${esc(q.q)}</textarea></div>
+    <div class="m-field"><label>選択肢1(正答)</label><input value="${esc(q.a)}"></div>
+    <div class="m-field"><label>選択肢2</label><input></div>
+    <div class="m-field"><label>選択肢3</label><input></div>
+    <div class="m-field"><label>選択肢4</label><input></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-blue btn-md" onclick="admCloseModal();toast('設問を保存しました(デモ)')">保存する</button>
+    </div>`);
+}
+
+/* ---------- 不正監視 ---------- */
+function admUpdateBadge(){
+  const n=PROCTOR_SESSIONS.filter(p=>p.flag==="review").length;
+  const b=$("proctorBadge"); if(b){ b.textContent=n; b.style.display=n?"":"none"; }
+}
+function renderProctor(){
+  $("view-adm-proctor").innerHTML = `
+  ${admCrumb(["不正監視"])}
+  <h1 class="page-title">不正監視</h1>
+  <p class="page-lead">受験中の顔スナップショットと操作ログをレビューし、必要に応じて合否の無効化を行います。</p>
+
+  <div class="table-scroll mt-m"><table class="data-table">
+    <thead><tr><th style="width:130px">受験日時</th><th>受験者</th><th style="width:80px" class="c">所要</th><th style="width:100px" class="c">スナップ</th><th style="width:90px" class="c">離脱検知</th><th style="width:130px">結果</th><th style="width:110px" class="c">レビュー</th></tr></thead>
+    <tbody>
+    ${PROCTOR_SESSIONS.map(p=>{
+      const s=studentOf(p.user);
+      return `<tr class="clickable" onclick="admGo('proctorDetail','${p.id}')">
+        <td>${p.date}</td>
+        <td><b>${esc(s.name)}</b></td>
+        <td class="c">${p.dur}</td>
+        <td class="c">${p.snaps}枚</td>
+        <td class="c">${p.warns?`<span class="tag ${p.warns>=3?"tag-bad":"tag-warn"}">${p.warns}回</span>`:"0回"}</td>
+        <td style="font-size:12px">${p.result}</td>
+        <td class="c">${p.flag==="review"?'<span class="tag tag-bad">要確認</span>':p.flag==="invalid"?'<span class="tag tag-bad">無効化済</span>':p.flag==="cleared"?'<span class="tag tag-ok">確認済</span>':'—'}</td>
+      </tr>`;}).join("")}
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">行をクリックすると詳細レビューを表示します。離脱検知3回以上は自動で「要確認」になります。</p>`;
+}
+function snapSvg(){ return `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="9" r="3.2"/><path d="M5 19c1.4-3 4-4.4 7-4.4s5.6 1.4 7 4.4"/></svg>`; }
+function renderProctorDetail(id){
+  const p=PROCTOR_SESSIONS.find(x=>x.id===id)||PROCTOR_SESSIONS[0];
+  admState.currentSession=p.id;
+  const s=studentOf(p.user);
+  const flaggedIdx=[2,5,8];
+  $("view-adm-proctorDetail").innerHTML = `
+  ${admCrumb([`<a href="javascript:void(0)" onclick="admGo('proctor')">不正監視</a>`, `${esc(s.name)} さんの受験`])}
+  <h1 class="page-title">監視レビュー — ${esc(s.name)}</h1>
+  <p class="page-lead">${p.date} 受験 ／ 所要 ${p.dur} ／ 結果:${p.result}</p>
+
+  <div class="mt-s" style="display:flex;gap:10px;flex-wrap:wrap">
+    ${p.flag==="review"?`
+      <button class="btn btn-blue btn-sm" onclick="resolveSession('${p.id}','cleared')">問題なし(確認済みにする)</button>
+      <button class="btn btn-danger btn-sm" onclick="resolveSession('${p.id}','invalid')">不正と判定し合否を無効化</button>`
+      :p.flag==="invalid"?'<span class="tag tag-bad">この受験は無効化されています</span>'
+      :p.flag==="cleared"?'<span class="tag tag-ok">確認済み(問題なし)</span>':""}
+    <button class="btn btn-line btn-sm" onclick="openMessage('${s.id}')">受験者に連絡する</button>
+  </div>
+
+  <h2 class="h-bar">顔スナップショット<small>30秒間隔・全${p.snaps}枚(先頭12枚を表示)</small></h2>
+  <div class="snap-grid">
+    ${Array.from({length:12},(_,i)=>`
+      <div class="snap ${p.warns&&flaggedIdx.includes(i)?"flagged":""}">
+        ${snapSvg()}
+        <span class="ts">${String(Math.floor(i*0.5)).padStart(2,"0")}:${i%2?"30":"00"}</span>
+      </div>`).join("")}
+  </div>
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">⚠は自動検知(顔の不在・複数人・視線逸脱など)のフラグ付きフレームです。実装時は画像を保存期間(要件7.2:要確認)に従い管理します。</p>
+
+  <h2 class="h-bar">操作ログ</h2>
+  <div class="box" style="padding:8px 16px">
+    ${p.logs.map(l=>`<div class="log-line ${l[2]?"warn":""}"><span class="t">${l[0]}</span><span class="e">${esc(l[1])}</span></div>`).join("")}
+  </div>`;
+}
+function resolveSession(id,flag){
+  const p=PROCTOR_SESSIONS.find(x=>x.id===id);
+  p.flag=flag; admUpdateBadge();
+  if(flag==="invalid"){
+    const s=studentOf(p.user);
+    if(s.exam){ s.exam.pass=false; }
+    if(s.cert){ s.cert=null; }
+    toast(`${s.name} さんの受験を無効化しました(合否取消・受験者へ通知)`);
+  } else {
+    toast("確認済みにしました");
+  }
+  renderProctorDetail(id);
+}
+
+/* ---------- 資格発行管理 ---------- */
+function renderCertsAdmin(){
+  const holders=STUDENTS.filter(s=>s.cert);
+  $("view-adm-certs").innerHTML = `
+  ${admCrumb(["資格発行管理"])}
+  <h1 class="page-title">資格発行管理</h1>
+  <p class="page-lead">認定証の発行状況と保有者台帳を管理します。合格時は自動発行、こちらからは再発行・失効を行えます。</p>
+
+  <div class="grid3 mt-m">
+    <div class="kpi"><div class="lbl">C級 保有者</div><div class="val">${holders.length}<small> 名</small></div><div class="sub">有効な認定</div></div>
+    <div class="kpi"><div class="lbl">今月の新規発行</div><div class="val">2<small> 件</small></div><div class="sub">7月</div></div>
+    <div class="kpi"><div class="lbl">失効・無効化</div><div class="val">0<small> 件</small></div><div class="sub">累計</div></div>
+  </div>
+
+  <h2 class="h-bar">保有者台帳</h2>
+  <div class="table-tools">
+    <input type="search" placeholder="氏名・資格IDで検索(デモ)">
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="toast('台帳CSVを出力しました(デモ)')">CSV出力</button>
+  </div>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th style="width:130px">資格ID</th><th>氏名</th><th style="width:110px">取得日</th><th style="width:110px">有効期限</th><th style="width:200px" class="c"></th></tr></thead>
+    <tbody>
+    ${holders.map(s=>`
+      <tr>
+        <td><b>${s.cert}</b></td>
+        <td><a href="javascript:void(0)" onclick="admGo('studentDetail','${s.id}')">${esc(s.name)}</a></td>
+        <td>${s.exam.date}</td>
+        <td>2029.${s.exam.date.split(".").slice(1).join(".")}</td>
+        <td class="c">
+          <button class="btn btn-line btn-xs" onclick="toast('認定証PDFを再発行しました(デモ)')">再発行</button>
+          <button class="btn btn-line btn-xs" onclick="toast('資格確認ページ:https://aps.s-cade.jp/verify/${s.cert}(デモ)')">確認ページ</button>
+          <button class="btn btn-danger btn-xs" onclick="toast('失効処理:実装時は確認+通知フロー(デモ)')">失効</button>
+        </td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>
+
+  <h2 class="h-bar">認定証の設定</h2>
+  <table class="dl-table">
+    <tr><th>デザイン</th><td>認定証テンプレート v1(氏名・資格ID・認定日を自動差し込み)<button class="btn btn-line btn-xs" style="margin-left:8px" onclick="toast('テンプレートを差し替えます(デモ)')">差し替え</button></td></tr>
+    <tr><th>有効期限</th><td>取得日から3年(更新制度は検討中 — 要件12章)</td></tr>
+    <tr><th>資格確認ページ</th><td>公開(資格IDによる第三者照会可)</td></tr>
+  </table>`;
+}
+
+/* ---------- 決済・売上 ---------- */
+function salesStatusTag(st){
+  return st==="succeeded"?'<span class="tag tag-ok">入金済</span>'
+    : st==="pending"?'<span class="tag tag-warn">入金待ち</span>'
+    : st==="refunded"?'<span class="tag tag-gray">返金済</span>':st;
+}
+function renderSales(){
+  const total=SALES.filter(s=>s.status==="succeeded").reduce((a,b)=>a+b.amount,0);
+  const maxSales=Math.max(...MONTHLY_SALES.map(m=>m[1]));
+  $("view-adm-sales").innerHTML = `
+  ${admCrumb(["決済・売上"])}
+  <h1 class="page-title">決済・売上</h1>
+  <p class="page-lead">決済は Stripe を利用しています。取引の詳細・返金は Stripe ダッシュボードとも連携します。</p>
+
+  <div class="grid3 mt-m">
+    <div class="kpi"><div class="lbl">入金済み合計(表示期間)</div><div class="val">¥${yen(total)}</div><div class="sub">Stripe succeeded</div></div>
+    <div class="kpi"><div class="lbl">入金待ち</div><div class="val">${SALES.filter(s=>s.status==="pending").length}<small> 件</small></div><div class="sub">銀行振込の消込待ち</div></div>
+    <div class="kpi"><div class="lbl">返金</div><div class="val">${SALES.filter(s=>s.status==="refunded").length}<small> 件</small></div><div class="sub">表示期間</div></div>
+  </div>
+
+  <h2 class="h-bar">月次売上</h2>
+  <div class="box box-pad">
+    <div class="vbar-wrap">
+      ${MONTHLY_SALES.map(m=>`<div class="vbar"><span class="vl">${Math.round(m[1]/10000)}万</span><div class="col" style="height:${Math.round(m[1]/maxSales*100)}%"></div><span class="lb">${m[0]}</span></div>`).join("")}
+    </div>
+  </div>
+
+  <h2 class="h-bar">取引一覧</h2>
+  <div class="table-tools">
+    <select><option>すべての状態</option><option>入金済</option><option>入金待ち</option><option>返金済</option></select>
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="toast('Stripe ダッシュボードを開きます(デモ)')">Stripe で開く</button>
+    <button class="btn btn-line btn-sm" onclick="toast('取引CSVを出力しました(デモ)')">CSV出力</button>
+  </div>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th style="width:100px">日付</th><th>購入者</th><th>項目</th><th style="width:100px" class="r">金額</th><th style="width:90px" class="c">状態</th><th style="width:110px" class="c"></th></tr></thead>
+    <tbody>
+    ${SALES.map(p=>{
+      const s=studentOf(p.user);
+      return `<tr>
+        <td>${p.date}</td>
+        <td><a href="javascript:void(0)" onclick="admGo('studentDetail','${s.id}')">${esc(s.name)}</a><br><span style="font-size:10.5px;color:var(--muted)">${p.id}</span></td>
+        <td style="font-size:12.5px">${esc(p.item)}</td>
+        <td class="r">¥${yen(p.amount)}</td>
+        <td class="c">${salesStatusTag(p.status)}</td>
+        <td class="c">
+          ${p.status==="succeeded"?`<button class="btn btn-danger btn-xs" onclick="refund('${p.id}')">返金</button>`:""}
+          ${p.status==="pending"?`<button class="btn btn-blue btn-xs" onclick="toast('入金を確認済みにしました(デモ)')">消込</button>`:""}
+          <button class="btn btn-line btn-xs" onclick="toast('領収書・請求書を再送しました(デモ)')">帳票</button>
+        </td>
+      </tr>`;}).join("")}
+    </tbody>
+  </table></div>`;
+}
+function refund(id){
+  admOpenModal(`
+    <h3>返金の実行</h3>
+    <p class="sub">取引 ${id} を Stripe 経由で返金します。この操作は取り消せません。</p>
+    <div class="m-field"><label>返金理由(受講者に通知されます)</label><textarea placeholder="例)重複決済のため"></textarea></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-danger btn-md" onclick="admCloseModal();toast('返金を実行しました(デモ:Stripe refunds.create)')">返金を実行する</button>
+    </div>`);
+}
+
+/* ---------- アクセス解析 ---------- */
+function renderAnalytics(){
+  const lessons=CONTENT.C.flatMap(c=>c.lessons);
+  const maxV=Math.max(...lessons.map(l=>l.views));
+  $("view-adm-analytics").innerHTML = `
+  ${admCrumb(["アクセス解析"])}
+  <h1 class="page-title">アクセス解析</h1>
+  <p class="page-lead">サイトへのアクセス、レッスンの視聴・完了状況を確認します。</p>
+
+  <div class="table-tools mt-m">
+    <select><option>直近30日</option><option>直近90日</option><option>今年</option></select>
+    <span class="spacer"></span>
+    <button class="btn btn-line btn-sm" onclick="toast('解析CSVを出力しました(デモ)')">CSV出力</button>
+  </div>
+
+  <div class="grid4">
+    <div class="kpi"><div class="lbl">サイト訪問</div><div class="val">4,218</div><div class="sub"><span class="up">+12%</span> 前期間比</div></div>
+    <div class="kpi"><div class="lbl">会員ログイン</div><div class="val">1,306</div><div class="sub"><span class="up">+8%</span></div></div>
+    <div class="kpi"><div class="lbl">動画再生</div><div class="val">5,842</div><div class="sub"><span class="up">+21%</span></div></div>
+    <div class="kpi"><div class="lbl">入会CV率</div><div class="val">3.4<small> %</small></div><div class="sub"><span class="down">-0.3pt</span></div></div>
+  </div>
+
+  <h2 class="h-bar">レッスン別 視聴数(C級)</h2>
+  <div class="box box-pad">
+    <div class="bar-list">
+      ${lessons.map(l=>`<div class="bar-item"><span class="nm" title="${esc(l.t)}">${esc(l.t)}</span>${admPbar(Math.round(l.views/maxV*100))}<span class="num">${l.views}</span></div>`).join("")}
+    </div>
+  </div>
+
+  <h2 class="h-bar">レッスン別 完了率(C級)</h2>
+  <div class="box box-pad">
+    <div class="bar-list">
+      ${lessons.map(l=>`<div class="bar-item"><span class="nm" title="${esc(l.t)}">${esc(l.t)}</span>${admPbar(l.comp,{cls:l.comp>=75?"ok":l.comp<70?"warn":""})}<span class="num">${l.comp}%</span></div>`).join("")}
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--faint);margin-top:8px">完了率が低いレッスンは、長さの分割や内容の見直し候補です。</p>`;
+}
+
+/* ---------- お知らせ管理 ---------- */
+function renderNoticesAdmin(){
+  $("view-adm-notices").innerHTML = `
+  ${admCrumb(["お知らせ管理"])}
+  <h1 class="page-title">お知らせ管理</h1>
+  <p class="page-lead">受講者サイトのお知らせと、システムメールのテンプレートを管理します。</p>
+
+  <div class="table-tools mt-m">
+    <span class="spacer"></span>
+    <button class="btn btn-blue btn-sm" onclick="editNotice(null)">+ お知らせを作成</button>
+  </div>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th style="width:100px">公開日</th><th>タイトル</th><th style="width:110px" class="c">状態</th><th style="width:110px" class="c">掲載期限</th><th style="width:130px" class="c"></th></tr></thead>
+    <tbody>
+    ${ADM_NOTICES.map(n=>`
+      <tr>
+        <td>${n.date}</td>
+        <td><b>${esc(n.t)}</b></td>
+        <td class="c">${n.status==="公開中"?'<span class="tag tag-ok">公開中</span>':n.status==="下書き"?'<span class="tag tag-gray">下書き</span>':'<span class="tag tag-gray">掲載終了</span>'}</td>
+        <td class="c">${n.until}</td>
+        <td class="c">
+          <button class="btn btn-line btn-xs" onclick="editNotice('${n.id}')">編集</button>
+          ${n.status==="下書き"?`<button class="btn btn-blue btn-xs" onclick="toast('公開しました(デモ)')">公開</button>`:`<button class="btn btn-line btn-xs" onclick="toast('非公開にしました(デモ)')">非公開</button>`}
+        </td>
+      </tr>`).join("")}
+    </tbody>
+  </table></div>
+
+  <h2 class="h-bar">メールテンプレート</h2>
+  <div class="table-scroll"><table class="data-table">
+    <thead><tr><th>テンプレート</th><th style="width:130px" class="c"></th></tr></thead>
+    <tbody>
+      ${MAIL_TEMPLATES.map(t=>`<tr><td>${t}</td><td class="c"><button class="btn btn-line btn-xs" onclick="toast('テンプレートを編集します(デモ)')">編集</button><button class="btn btn-line btn-xs" onclick="toast('テスト送信しました(デモ)')">テスト送信</button></td></tr>`).join("")}
+    </tbody>
+  </table></div>`;
+}
+function editNotice(id){
+  const n=ADM_NOTICES.find(x=>x.id===id)||{t:"",until:""};
+  admOpenModal(`
+    <h3>${id?"お知らせの編集":"お知らせの作成"}</h3>
+    <div class="m-field"><label>タイトル</label><input value="${esc(n.t)}"></div>
+    <div class="m-field"><label>本文</label><textarea placeholder="本文を入力"></textarea></div>
+    <div class="grid2">
+      <div class="m-field"><label>公開日</label><input type="date"></div>
+      <div class="m-field"><label>掲載期限(任意)</label><input type="date"></div>
+    </div>
+    <div class="m-field"><label><input type="checkbox" style="width:auto;margin-right:6px">メールでも配信する</label></div>
+    <div class="acts">
+      <button class="btn btn-line btn-md" onclick="admCloseModal()">キャンセル</button>
+      <button class="btn btn-line btn-md" onclick="admCloseModal();toast('下書きを保存しました(デモ)')">下書き保存</button>
+      <button class="btn btn-blue btn-md" onclick="admCloseModal();toast('お知らせを公開しました(デモ)')">公開する</button>
+    </div>`);
+}
+
+/* ---------- 初期化 ---------- */
+admUpdateBadge();
+
+
+/* ==========================================================
+   統合ログイン:メールアドレスで会員/管理者を判定
+   - 管理者はパスワード照合後に二要素認証(6桁コード)を経由
+   - 実装時は管理者判定・認証・OTPをすべてサーバー側で行う
+   ========================================================== */
+const ADMIN_ACCOUNTS=[
+  { email:"admin@s-cade.jp", name:"山口 翔大",
+    passHash:"9031529f98d6daba972146dfbcb1f4a4787f4cb60dcad7db38b5e84eed5b4ab0" } // aps-admin-2026
+];
+let pendingAdmin=null;
+
+async function doLogin(){
+  const email=($("loginEmail").value||"").trim().toLowerCase();
+  const pass=$("loginPass").value||"";
+  const adm=ADMIN_ACCOUNTS.find(a=>a.email===email);
+  if(adm){
+    const h=await sha256(pass);
+    if(h!==adm.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+    pendingAdmin=adm;
+    showAuth("adminOtp");
+    toast("管理者ログイン:認証コードを送信しました(デモ:任意の6桁で進めます)");
+    return;
+  }
+  if(!state.account){ toast("アカウントが見つかりません。入会申し込み(会員登録)からご登録ください"); return; }
+  if(email!==state.account.email.toLowerCase()){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  const h=await sha256(pass);
+  if(h!==state.account.passHash){ toast("メールアドレスまたはパスワードが正しくありません"); return; }
+  enterMember();
+  toast("ログインしました");
+}
+function adminOtpConfirm(){
+  if(!pendingAdmin){ showAuth("login"); return; }
+  enterAdmin(pendingAdmin);
+}
+function enterAdmin(adm){
+  $("authArea").classList.add("hide");
+  $("adminShell").classList.add("active");
+  const nm=$("admUserName"); if(nm) nm.textContent=adm.name+" さん";
+  admUpdateBadge();
+  admGo("dash");
+  toast("管理画面にログインしました");
+}
+function admLogout(){
+  admToggleSide(false);
+  pendingAdmin=null;
+  $("adminShell").classList.remove("active");
+  $("authArea").classList.remove("hide");
+  showAuth("login");
+  toast("ログアウトしました");
+}
+
 </script>
 </body>
 </html>
